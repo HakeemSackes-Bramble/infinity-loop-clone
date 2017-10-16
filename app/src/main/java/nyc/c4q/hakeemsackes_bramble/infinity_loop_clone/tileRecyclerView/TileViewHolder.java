@@ -3,6 +3,7 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 /**
@@ -10,12 +11,24 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
  */
 
 class TileViewHolder extends RecyclerView.ViewHolder {
+    private GameLayout mGameLayout;
 
-    public TileViewHolder(View itemView) {
+    public TileViewHolder(View itemView, GameLayout gameLayout) {
         super(itemView);
+        this.mGameLayout = gameLayout;
     }
 
-    public void bind(Tile tile) {
+    public void bind(int position) {
+        final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileId(tile);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tile.setOrientation((short) ((tile.getOrientation() + 1) % 4));
+                itemView.setRotation(tile.getOrientation() * 90);
+            }
+        });
     }
+
+
 }

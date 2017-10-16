@@ -24,7 +24,7 @@ public class GameLayout {
     private void createGameTiles() {
         Random rand = new Random();
         for (int i = 0; i < rows * columns; i++) {
-            gameTiles.add(new Tile((short) rand.nextInt(6),(short) rand.nextInt(4), tileColor, (short) rand.nextInt(4)));
+            gameTiles.add(new Tile((short) rand.nextInt(4),(short) rand.nextInt(6), tileColor, (short) rand.nextInt(4)));
         }
     }
 

@@ -3,33 +3,31 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
 
 public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
-    ArrayList<Tile> gameTiles;
+    GameLayout gameLayout;
 
-    public TileAdapter(ArrayList<Tile> gameTiles) {
-        this.gameTiles = gameTiles;
+    public TileAdapter(GameLayout gameLayout) {
+        this.gameLayout = gameLayout;
     }
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       return new TileViewHolder(new TileView(parent.getContext()));
+       return new TileViewHolder(new TileView(parent.getContext()), gameLayout);
     }
 
     @Override
     public void onBindViewHolder(TileViewHolder holder, int position) {
-        holder.bind(gameTiles.get(position));
+        holder.bind(position);
     }
 
     @Override
     public int getItemCount() {
-        return gameTiles.size();
+        return gameLayout.getGameTiles().size();
     }
 }

@@ -27,12 +27,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rows = rand.nextInt(8) + 4;
-        columns = rand.nextInt(8) + 2;
+        columns = rand.nextInt(6) + 2;
         tileColor = Color.argb(255,0,0,0);
         recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
         gameLayout = new GameLayout(rows,columns,tileColor);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),rows, RecyclerView.VERTICAL,false));
-        recyclerView.setAdapter(new TileAdapter(gameLayout.getGameTiles()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),columns, RecyclerView.VERTICAL,false));
+        recyclerView.setAdapter(new TileAdapter(gameLayout));
         Log.d(TAG, "onCreate: " + gameLayout.getGameTiles());
     }
 }

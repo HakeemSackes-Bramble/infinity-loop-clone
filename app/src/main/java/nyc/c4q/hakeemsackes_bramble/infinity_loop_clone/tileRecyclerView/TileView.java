@@ -18,7 +18,7 @@ class TileView extends View {
     private float scale;
     private Tile tileId;
     private Paint paint;
-    private int sizeDP = 30;
+    private int sizeDP = 40;
     private float sizePX;
 
     public TileView(Context context) {
@@ -75,7 +75,7 @@ class TileView extends View {
         paint = new Paint();
         paint.setColor(tileId.getTileColor());
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(20);
         paint.setAntiAlias(true);
     }
 }

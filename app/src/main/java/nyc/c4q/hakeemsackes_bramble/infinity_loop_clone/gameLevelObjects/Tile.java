@@ -17,6 +17,9 @@ public class Tile {
         CorrectOrientation = correctOrientation;
     }
 
+    public void setOrientation(short orientation) {
+        this.orientation = orientation;
+    }
 
     public short getOrientation() {
         return orientation;
