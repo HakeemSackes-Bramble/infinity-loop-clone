@@ -48,17 +48,23 @@ class TileView extends View {
 
     private void drawTileType(short tileType, Canvas canvas) {
         if (tileType == 0) {
+            //blank tile
         } else if (tileType == 1) {
+            // circle line tile
             canvas.drawCircle(getWidth()/2,getHeight()/2,getHeight()/4,paint);
             canvas.drawLine(getWidth()/2,getHeight()/2,getWidth()/2,0,paint);
         } else if (tileType == 2) {
-            canvas.drawLine(getWidth()/2,getHeight(),getWidth()/2,0,paint);
-        } else if (tileType == 3) {
+            //quarter circle tile
             canvas.drawCircle(0,0,getHeight()/2,paint);
+        } else if (tileType == 3) {
+            //line tile
+            canvas.drawLine(getWidth()/2,getHeight(),getWidth()/2,0,paint);
         } else if (tileType == 4) {
+            //three prong tile
             canvas.drawCircle(0,0,getHeight()/2,paint);
             canvas.drawCircle(0,getHeight(),getHeight()/2,paint);
         } else if (tileType == 5) {
+            //four prong tile
             canvas.drawCircle(0,0,getHeight()/2,paint);
             canvas.drawCircle(0,getHeight(),getHeight()/2,paint);
             canvas.drawCircle(getWidth(),getHeight(),getHeight()/2,paint);

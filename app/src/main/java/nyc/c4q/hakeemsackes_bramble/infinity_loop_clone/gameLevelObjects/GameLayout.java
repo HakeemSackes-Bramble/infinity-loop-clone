@@ -1,6 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -12,6 +13,7 @@ public class GameLayout {
     private int rows;
     private int columns;
     private ArrayList<Tile> gameTiles;
+    private HashSet<Integer> isCorrectlyOriented;
 
     public GameLayout(int rows, int columns, int tileColor) {
         this.tileColor = tileColor;
@@ -24,7 +26,18 @@ public class GameLayout {
     private void createGameTiles() {
         Random rand = new Random();
         for (int i = 0; i < rows * columns; i++) {
-            gameTiles.add(new Tile((short) rand.nextInt(4),(short) rand.nextInt(6), tileColor, (short) rand.nextInt(4)));
+            int tileType = 6;
+            boolean edge = (i % columns == 4 || i % columns == 0) //left and right edges
+                    ||(i < columns || i >((rows * columns) - columns));
+            boolean corner = (i % columns == 4 || i % columns == 0) //left and right edges
+                    ||(i < columns || i >((rows * columns) - columns));
+            if(edge){
+                tileType = 5;
+            }
+            if(corner){
+                tileType = 3;
+            }
+            gameTiles.add(new Tile((short) rand.nextInt(4),(short) rand.nextInt(tileType), tileColor, (short) rand.nextInt(4)));
         }
     }
 
