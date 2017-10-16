@@ -1,3 +1,3 @@
 # infinity-loop-clone
 
-recreating one of my favorite game just to see if i am able to.
+Recreating one of my favorite games to see if I am able to.
