@@ -20,7 +20,7 @@ public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TileViewHolder(new TileView(parent.getContext()));
+       return new TileViewHolder(new TileView(parent.getContext()));
     }
 
     @Override
@@ -30,6 +30,6 @@ public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return gameTiles.size();
     }
 }

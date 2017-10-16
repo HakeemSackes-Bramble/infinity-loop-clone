@@ -1,6 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
@@ -10,7 +11,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 class TileViewHolder extends RecyclerView.ViewHolder {
 
-    public TileViewHolder(TileView itemView) {
+    public TileViewHolder(View itemView) {
         super(itemView);
     }
 
