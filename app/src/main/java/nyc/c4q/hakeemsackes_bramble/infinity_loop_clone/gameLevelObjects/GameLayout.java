@@ -63,31 +63,41 @@ public class GameLayout {
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
         boolean center = !(topEdge || bottomEdge || rightEdge || leftEdge);
-        if (i >= columns) {
-            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-        }
-        if (!leftEdge) {
-            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        }
 
         if ((topEdge || bottomEdge) && (rightEdge || leftEdge)) { // is corner
             maxType = 3;
         } else if ((topEdge || bottomEdge) || (rightEdge || leftEdge)) { //is edge
             maxType = 5;
         }
+        if (i >= columns) {
+            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
+            if (isEmptyTop) {
+                maxType--;
+            } else if (!isEmptyTop) {
+                minType++;
+            }
+        }
+        if (!leftEdge) {
+            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
+            if (isEmptyLeft) {
+                maxType--;
+
+            } else if (!isEmptyLeft) {
+                minType++;
+            }
+        }
 
 
-        Log.d(TAG, "getTileOptions: pos " + i + " : tiletype " + maxType + " min type " + minType);
+        Log.d(TAG, "getTileOptions: i " + i + " :max " + maxType + "\n min " + minType + " empty top " + isEmptyTop + "\n");
 
-        int t = rand.nextInt(maxType);
-        Log.d(TAG, "getTileOptions: pos " + i + " : tiletype " + t + " min type " + minType);
+        int t = rand.nextInt(maxType - minType) + minType;
+        Log.d(TAG, "getTileOptions: pos " + i + " :choice " + t + " min type " + minType);
         return t;
     }
 
     private int getOrientationOption(int tileType, int i, Tile top, Tile lefty) {
         int prongs = Integer.valueOf(tilePossibilities.get(tileType)[0]) - 1;
-        int maxOption = 4 ;
-        int minOption = 0;
+        int maxOption;
         int shifter = 0;
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
@@ -105,52 +115,56 @@ public class GameLayout {
         //if bottom left corner then orientation is  1
         //if top left corner then orientation is 2
         //if top right  corner then orientation is 3
-        boolean isEmptyTop = true;
-        boolean isEmptyLeft = true;
-        if (i >= columns) {
-            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-            Log.d(TAG, "getOrientationOption: istopempty " + isEmptyTop);
-        }
-        if (i > 0) {
-            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        }
+        boolean isEmptyTop;
+        boolean isEmptyLeft;
+
         if ((topEdge || bottomEdge) && (rightEdge || leftEdge)) { // is corner
             maxOption = 2;
             if (rightEdge && bottomEdge) { // right edge
                 shifter = 3;
-            }else if (bottomEdge && leftEdge) { //if bottom edge
+            } else if (bottomEdge && leftEdge) { //if bottom edge
                 shifter = 0;
-            }else if (rightEdge && topEdge) { // if left edge
+            } else if (rightEdge && topEdge) { // if left edge
                 shifter = 2;
-            }else if (topEdge && leftEdge) {  // top edge
+            } else if (topEdge && leftEdge) {  // top edge
                 shifter = 1;
-
             }
-        } else if(center){
+        } else if (center) {
             maxOption = 4;
         } else { //is edge
             maxOption = 3;
             if (rightEdge) { // right edge
                 shifter = 2;
-            }else if (bottomEdge) { //if bottom edge
+            } else if (bottomEdge) { //if bottom edge
                 shifter = 3;
-            }else if (leftEdge) { // if left edge
+            } else if (leftEdge) { // if left edge
                 shifter = 0;
-            }else if (topEdge) {  // top edge
+            } else if (topEdge) {  // top edge
                 shifter = 1;
             }
         }
 
-        if (!isEmptyTop) {
-
+        if (i >= columns) {
+            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
+            if (isEmptyTop && maxOption > prongs) {
+                maxOption--;
+            } else if (!isEmptyTop) {
+            }
         }
-        if (isEmptyLeft) {
-
+        if (!leftEdge) {
+            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
+            if (isEmptyLeft && maxOption > prongs) {
+                maxOption--;
+            } else if (!isEmptyLeft) {
+            }
         }
 
         Log.d(TAG, "getOrientationOptions: max options " + maxOption);
         if (prongs < 0) {
             return 1;
+        }
+        if (maxOption <= prongs) {
+            maxOption++;
         }
         int f = (rand.nextInt(maxOption - prongs) + shifter + prongs) % 4;
         Log.d(TAG, "getOrientationOptions:  tiletype, orientation choice " + f);

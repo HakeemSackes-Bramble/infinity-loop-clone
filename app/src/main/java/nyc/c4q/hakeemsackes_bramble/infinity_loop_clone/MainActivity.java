@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(new TileAdapter(gameLayout));
         Log.d(TAG, "onCreate: " + gameLayout.getGameTiles());
+
+        //temp button used for testing
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
