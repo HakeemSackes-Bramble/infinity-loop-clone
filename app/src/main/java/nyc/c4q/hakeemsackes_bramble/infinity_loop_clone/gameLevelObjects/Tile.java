@@ -5,27 +5,27 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
  */
 
 public class Tile {
-    private short orientation;
-    private short tileType;
+    private int orientation;
+    private int tileType;
     private int tileColor;
-    private short CorrectOrientation;
+    private int correctOrientation;
 
-    public Tile(short orientation, short tileType, int color, short correctOrientation) {
+    public Tile(int orientation, int tileType, int color, int correctOrientation) {
         this.orientation = orientation;
         this.tileType = tileType;
         this.tileColor = color;
-        CorrectOrientation = correctOrientation;
+        this.correctOrientation = correctOrientation;
     }
 
-    public void setOrientation(short orientation) {
+    public void setOrientation(int orientation) {
         this.orientation = orientation;
     }
 
-    public short getOrientation() {
+    public int getOrientation() {
         return orientation;
     }
 
-    public short getTileType() {
+    public int getTileType() {
         return tileType;
     }
 
@@ -33,8 +33,8 @@ public class Tile {
         return tileColor;
     }
 
-    public short getCorrectOrientation() {
-        return CorrectOrientation;
+    public int getCorrectOrientation() {
+        return correctOrientation;
     }
 
 }

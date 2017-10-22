@@ -46,12 +46,13 @@ class TileView extends View {
         setRotation(tileId.getOrientation() * 90);
     }
 
-    private void drawTileType(short tileType, Canvas canvas) {
+    private void drawTileType(int tileType, Canvas canvas) {
         if (tileType == 0) {
             //blank tile
         } else if (tileType == 1) {
             // circle line tile
             canvas.drawCircle(getWidth()/2,getHeight()/2,getHeight()/4,paint);
+            canvas.drawCircle(getWidth()/2,getHeight()/2,getHeight()/16,paint);
             canvas.drawLine(getWidth()/2,getHeight()/2,getWidth()/2,0,paint);
         } else if (tileType == 2) {
             //quarter circle tile
