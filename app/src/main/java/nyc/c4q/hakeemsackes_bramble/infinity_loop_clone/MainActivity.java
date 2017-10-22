@@ -35,7 +35,12 @@ public class MainActivity extends AppCompatActivity {
         tileColor = Color.argb(255, 0, 0, 0);
         recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
         gameLayout = new GameLayout(rows, columns, tileColor);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false));
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         recyclerView.setAdapter(new TileAdapter(gameLayout));
         Log.d(TAG, "onCreate: " + gameLayout.getGameTiles());
         button.setOnClickListener(new View.OnClickListener() {
