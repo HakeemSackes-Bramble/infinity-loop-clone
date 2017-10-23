@@ -29,7 +29,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 tile.setOrientation(((tile.getOrientation() + 1) % 4));
                 itemView.setRotation(tile.getOrientation() * 90);
-                Log.d(TAG, "onClick: " + tile.getOrientation() + "correct " + tile.getCorrectOrientation());
+                Log.d(TAG, "onClick: " + tile.getOrientation() + "correct " +tile.getCorrectOrientation());
             }
         });
     }

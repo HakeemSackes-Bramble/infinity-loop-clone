@@ -66,37 +66,75 @@ public class GameLayout {
 
         if ((topEdge || bottomEdge) && (rightEdge || leftEdge)) { // is corner
             maxType = 3;
-        } else if ((topEdge || bottomEdge) || (rightEdge || leftEdge)) { //is edge
+        } else if (!center) { //is edge
             maxType = 5;
         }
         if (i >= columns) {
             isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-            if (isEmptyTop) {
-                maxType--;
-            } else if (!isEmptyTop) {
-                minType++;
-            }
         }
         if (!leftEdge) {
             isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-            if (isEmptyLeft) {
-                maxType--;
-
-            } else if (!isEmptyLeft) {
-                minType++;
+        }
+        if (isEmptyTop && isEmptyLeft) {
+            if (bottomEdge && rightEdge) {
+                return 0;
             }
+            if (rightEdge) {
+                return 1;
+            }
+            if (bottomEdge) {
+                return rand.nextInt(2);
+            }
+            return rand.nextInt(3);
+
+        } else if (!isEmptyTop && isEmptyLeft) {
+
+            if (bottomEdge && rightEdge) {
+                return 1;
+            }
+            if (rightEdge) {
+                return rand.nextInt(2) * 2 + 1;
+            }
+            if (bottomEdge) {
+                return rand.nextInt(2) + 1;
+            }
+            return rand.nextInt(4) + 1;
+        } else if (isEmptyTop) {
+            if (bottomEdge && rightEdge) {
+                return 1;
+            }
+            if (bottomEdge) {
+                return rand.nextInt(2) * 2 + 1;
+            }
+            if (rightEdge) {
+                return rand.nextInt(2) + 1;
+            }
+            return rand.nextInt(4) + 1;
+        } else {
+            if (bottomEdge && rightEdge) {
+                return 2;
+            }
+            if (rightEdge) {
+                return rand.nextInt(2) * 2 + 2;
+            }
+            if (bottomEdge) {
+                return rand.nextInt(2) * 2 + 2;
+            }
+            return (rand.nextInt(3) + 2) % 4 + 2;
         }
 
-
-        Log.d(TAG, "getTileOptions: i " + i + " :max " + maxType + "\n min " + minType + " empty top " + isEmptyTop + "\n");
-
-        int t = rand.nextInt(maxType - minType) + minType;
-        Log.d(TAG, "getTileOptions: pos " + i + " :choice " + t + " min type " + minType);
-        return t;
+//        int t;
+//        Log.d(TAG, "getTileOptions: i " + i + " :max " + maxType + "\n min " + minType + " empty top " + isEmptyTop + "\n");
+//        t = rand.nextInt(maxType - minType) + minType;
+//        if (!isEmptyLeft && !isEmptyTop && t == 3) {
+//            t++;
+//        }
+//        Log.d(TAG, "getTileOptions: pos " + i + " :choice " + t + " min type " + minType);
+//        return t;
     }
 
     private int getOrientationOption(int tileType, int i, Tile top, Tile lefty) {
-        int prongs = Integer.valueOf(tilePossibilities.get(tileType)[0]) - 1;
+        int prongsM1 = Integer.valueOf(tilePossibilities.get(tileType)[0]) - 1;
         int maxOption;
         int shifter = 0;
         boolean topEdge = i < columns;
@@ -104,7 +142,7 @@ public class GameLayout {
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
         boolean center = !topEdge && !bottomEdge && !rightEdge && !leftEdge;
-        // assume max prongs
+        // assume max prongsM1
 
         //if right edge then orientation is  0
         //if bottom edge then orientation is  1
@@ -115,8 +153,8 @@ public class GameLayout {
         //if bottom left corner then orientation is  1
         //if top left corner then orientation is 2
         //if top right  corner then orientation is 3
-        boolean isEmptyTop;
-        boolean isEmptyLeft;
+        boolean isEmptyTop = true;
+        boolean isEmptyLeft = true;
 
         if ((topEdge || bottomEdge) && (rightEdge || leftEdge)) { // is corner
             maxOption = 2;
@@ -144,29 +182,74 @@ public class GameLayout {
             }
         }
 
-        if (i >= columns) {
+        if (!topEdge) {
             isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-            if (isEmptyTop && maxOption > prongs) {
-                maxOption--;
-            } else if (!isEmptyTop) {
-            }
         }
         if (!leftEdge) {
             isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-            if (isEmptyLeft && maxOption > prongs) {
-                maxOption--;
-            } else if (!isEmptyLeft) {
+        }
+
+        if (!isEmptyLeft && !isEmptyTop) {
+            if (rightEdge) {
+                return 0;
+            }
+            if (topEdge) {
+                return 2;
+            }
+            return (prongsM1 + 3) % 4;
+        } else if (isEmptyLeft && !isEmptyTop) {
+
+            if (rightEdge) {
+                return 0;
+            }
+            return prongsM1;
+        } else if (!isEmptyLeft) {
+            return 3;
+        } else {
+            maxOption = 2;
+            shifter = 1;
+            if (rightEdge) {
+                return 2;
+            }
+            if (bottomEdge) {
+                return prongsM1 + 1;
             }
         }
 
-        Log.d(TAG, "getOrientationOptions: max options " + maxOption);
-        if (prongs < 0) {
+//        if (i >= columns) {
+//            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
+//            if (isEmptyTop && maxOption > prongsM1) {
+//                maxOption--;
+//            } else if (!isEmptyTop) {
+//
+//            }
+//        }
+//        if (!leftEdge) {
+//            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
+//            if (isEmptyLeft && maxOption > prongsM1) {
+//                maxOption--;
+//            } else if (!isEmptyLeft) {
+//                if (topEdge) {
+//
+//                    maxOption = prongsM1 + 1;// top edge
+//                    shifter = 3 - prongsM1;
+//                }
+//                if (center) {
+//                    maxOption = 2 * prongsM1 + 1;
+//                    shifter = 3 - shifter;
+//                }
+//            }
+//
+//        }
+
+        Log.d(TAG, "getOrientationOptions: " + prongsM1 + " max options " + maxOption);
+        if (prongsM1 < 0) {
             return 1;
         }
-        if (maxOption <= prongs) {
-            maxOption++;
+        if (maxOption <= prongsM1) {
+            maxOption = prongsM1 + 1;
         }
-        int f = (rand.nextInt(maxOption - prongs) + shifter + prongs) % 4;
+        int f = (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
         Log.d(TAG, "getOrientationOptions:  tiletype, orientation choice " + f);
         return f;
     }
@@ -175,4 +258,20 @@ public class GameLayout {
         gameTiles.clear();
         createGameTiles();
     }
+
+    /* brainstorming
+    maxOption -- maximum number of possible orientations of given position
+    shifter -- rotates selection to conform to edges;
+    prongsM1 -- number of open edges minus one. used to limit orientations based on prongs
+    int f = (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
+    istopempty |
+
+    isleftempy |
+
+    first if left and top is empty choose electable tile(corresponding to position, edge corner center)
+    if top 0 is not
+    if left is not empty then choose from electable tile with prong facing left
+    istop
+    */
+
 }
