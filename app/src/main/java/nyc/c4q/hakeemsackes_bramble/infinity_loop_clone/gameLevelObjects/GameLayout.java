@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignedListener;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -22,6 +24,7 @@ public class GameLayout {
     private ArrayList<Tile> gameTiles;
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
+    private TileAlignedListener listener;
 
 
     public GameLayout(int rows, int columns, int tileColor) {
@@ -168,6 +171,7 @@ public class GameLayout {
         this.columns = columns;
         this.tileColor = tileColor;
         gameTiles.clear();
+        correctlyOriented.clear();
         createGameTiles();
     }
 
@@ -179,5 +183,15 @@ public class GameLayout {
         correctlyOriented.remove(position);
     }
 
+    public int getCorrectlyOrientedTileSize() {
+        return correctlyOriented.size() + 1;
+    }
 
+    public void setListener(TileAlignedListener listener) {
+        this.listener = listener;
+    }
+
+    public void runListener() {
+        listener.onTilesAligned();
+    }
 }

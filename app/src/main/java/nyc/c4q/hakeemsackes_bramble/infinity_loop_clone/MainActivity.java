@@ -16,7 +16,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLay
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignedListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
 
-public class MainActivity extends AppCompatActivity implements TileAlignedListener {
+public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private GameLayout gameLayout;
     private Button button;
@@ -28,8 +28,23 @@ public class MainActivity extends AppCompatActivity implements TileAlignedListen
     private static final String TAG = MainActivity.class.getName();
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
+    private TileAlignedListener tileAlignedListener = new TileAlignedListener() {
+        @Override
+        public void onTilesAligned() {
+            rows = rand.nextInt(8) + 4;
+            columns = rand.nextInt(5) + 4;
+            int red = rand.nextInt(56) + 200;
+            int green = rand.nextInt(56) + 200;
+            int blue = rand.nextInt(56) + 200;
+            linearLayout.setBackgroundColor(Color.rgb(red, green, blue));
+            tileColor = Color.rgb((int) (red * .5 + 10), (int) (green * .5 + 10), (int) (blue * .5 + 10));
+            gameLayout.resetGame(rows, columns, tileColor);
+            gridLayoutManager.setSpanCount(columns);
+            recyclerView.setAdapter(new TileAdapter(gameLayout));
+            Log.d(TAG, "onClick: " + tileColor);
+        }
+    };
 
-    //-16777216 -16711680 -16777215 -15721573
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements TileAlignedListen
         Log.d(TAG, "onCreate: " + backgoundColor + " " + (-15721573 + 13487566) + " " + Color.rgb(50, 50, 50));
         recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
         gameLayout = new GameLayout(rows, columns, tileColor);
+        gameLayout.setListener(tileAlignedListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
@@ -88,20 +104,5 @@ public class MainActivity extends AppCompatActivity implements TileAlignedListen
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-    }
-
-    @Override
-    public void onTilesAligned() {
-        rows = rand.nextInt(8) + 4;
-        columns = rand.nextInt(5) + 4;
-        int red = rand.nextInt(56) + 200;
-        int green = rand.nextInt(56) + 200;
-        int blue = rand.nextInt(56) + 200;
-        linearLayout.setBackgroundColor(Color.rgb(red, green, blue));
-        tileColor = Color.rgb((int) (red * .5), (int) (green * .5), (int) (blue * .5));
-        gameLayout.resetGame(rows, columns, tileColor);
-        gridLayoutManager.setSpanCount(columns);
-        recyclerView.setAdapter(new TileAdapter(gameLayout));
-        Log.d(TAG, "onClick: " + tileColor);
     }
 }

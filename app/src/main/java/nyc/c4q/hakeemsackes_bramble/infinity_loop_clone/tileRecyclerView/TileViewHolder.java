@@ -24,17 +24,28 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     public void bind(final int position) {
         final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileId(tile);
+        if (tile.getTileType() == 5 || tile.getTileType() == 0) {
+            mGameLayout.addCorrectedTile(position);
+        }
+        if (tile.getOrientation() == tile.getCorrectOrientation()) {
+            mGameLayout.addCorrectedTile(position);
+        }
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tile.setOrientation(((tile.getOrientation() + 1) % 4));
                 itemView.setRotation(tile.getOrientation() * 90);
-                if(tile.getOrientation()==tile.getOrientation()){
-                    mGameLayout.addCorrectedTile(position);
-                }else {
-                    mGameLayout.removeWrongTile(position);
+                if (tile.getTileType() < 5 && tile.getTileType() > 0) {
+                    if (tile.getOrientation() == tile.getCorrectOrientation()) {
+                        mGameLayout.addCorrectedTile(position);
+                    } else {
+                        mGameLayout.removeWrongTile(position);
+                    }
                 }
-                Log.d(TAG, "onClick: " + tile.getOrientation() + "correct " +tile.getCorrectOrientation());
+                if (mGameLayout.getGameTiles().size() == mGameLayout.getCorrectlyOrientedTileSize()) {
+                    mGameLayout.runListener();
+                }
+                Log.d(TAG, "onClick: " + mGameLayout.getCorrectlyOrientedTileSize() + "correct " + mGameLayout.getGameTiles().size());
             }
         });
     }
