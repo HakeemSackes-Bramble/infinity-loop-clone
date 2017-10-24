@@ -8,6 +8,11 @@ public class Tile {
     private int orientation;
     private int tileType;
     private int tileColor;
+
+    public void setCorrectOrientation(int correctOrientation) {
+        this.correctOrientation = correctOrientation;
+    }
+
     private int correctOrientation;
 
     public Tile(int orientation, int tileType, int color, int correctOrientation) {

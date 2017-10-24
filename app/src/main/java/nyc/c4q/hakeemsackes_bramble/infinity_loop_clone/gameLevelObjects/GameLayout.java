@@ -17,6 +17,7 @@ import static android.content.ContentValues.TAG;
  */
 
 public class GameLayout {
+
     private int tileColor;
     private int rows;
     private int columns;
@@ -184,11 +185,15 @@ public class GameLayout {
     }
 
     public int getCorrectlyOrientedTileSize() {
-        return correctlyOriented.size() + 1;
+        return correctlyOriented.size();
     }
 
     public void setListener(TileAlignedListener listener) {
         this.listener = listener;
+    }
+
+    public void setTileColor(int tileColor) {
+        this.tileColor = tileColor;
     }
 
     public void runListener() {

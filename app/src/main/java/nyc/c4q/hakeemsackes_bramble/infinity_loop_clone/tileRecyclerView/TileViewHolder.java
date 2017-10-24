@@ -24,17 +24,22 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     public void bind(final int position) {
         final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileId(tile);
-        if (tile.getTileType() == 5 || tile.getTileType() == 0) {
+        if (tile.getTileType() == 5 || tile.getTileType() == 0 || tile.getOrientation() == tile.getCorrectOrientation()) {
             mGameLayout.addCorrectedTile(position);
         }
-        if (tile.getOrientation() == tile.getCorrectOrientation()) {
-            mGameLayout.addCorrectedTile(position);
+        if (tile.getTileType() == 3) {
+            tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
         }
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tile.setOrientation(((tile.getOrientation() + 1) % 4));
+                if (tile.getTileType() == 3) {
+                    tile.setOrientation(((tile.getOrientation() + 1) % 2));
+                } else {
+                    tile.setOrientation(((tile.getOrientation() + 1) % 4));
+                }
                 itemView.setRotation(tile.getOrientation() * 90);
+
                 if (tile.getTileType() < 5 && tile.getTileType() > 0) {
                     if (tile.getOrientation() == tile.getCorrectOrientation()) {
                         mGameLayout.addCorrectedTile(position);
@@ -45,7 +50,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                 if (mGameLayout.getGameTiles().size() == mGameLayout.getCorrectlyOrientedTileSize()) {
                     mGameLayout.runListener();
                 }
-                Log.d(TAG, "onClick: " + mGameLayout.getCorrectlyOrientedTileSize() + "correct " + mGameLayout.getGameTiles().size());
+                Log.d(TAG, "onClick: " + tile.getOrientation() + " " + mGameLayout.getCorrectlyOrientedTileSize() + " correct " + mGameLayout.getGameTiles().size());
             }
         });
     }
