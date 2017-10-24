@@ -26,8 +26,9 @@ public class GameLayout {
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignedListener listener;
-
-
+    /* I just realized current game layout can be done with a set of listeners/callbacks and the TileType class-
+        It would also allow for a much greater range of versatility and applications
+    */
     public GameLayout(int rows, int columns, int tileColor) {
         this.tileColor = tileColor;
         this.rows = rows;
