@@ -28,7 +28,6 @@ public class Tile {
     public int getTileType() {
         return tileType;
     }
-
     public int getTileColor() {
         return tileColor;
     }
