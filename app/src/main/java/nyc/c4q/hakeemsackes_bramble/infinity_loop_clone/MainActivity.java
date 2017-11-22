@@ -1,6 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone;
 
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,24 +12,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignedListener;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
+    MediaPlayer mP3november;
     private int rows;
     private int columns;
-    private int blue;
-    private int red;
-    private int green;
+    private float hue;
+    private float saturation;
+    private float value;
     private int backgoundColor;
     private int tileColor;
+
     private static final String TAG = MainActivity.class.getName();
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
@@ -40,16 +46,29 @@ public class MainActivity extends AppCompatActivity {
             gameLayout.resetGame(rows, columns, tileColor);
             gridLayoutManager.setSpanCount(columns);
             recyclerView.setAdapter(new TileAdapter(gameLayout));
-            linearLayout.setOnTouchListener(null);
+            button.setOnTouchListener(null);
+            button.setBackgroundColor(Color.alpha(0));
+            button.setText("");
             Log.d(TAG, "onClick: " + tileColor);
             return false;
         }
     };
-    private TileAlignedListener tileAlignedListener = new TileAlignedListener() {
+    private TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
+
+
         @Override
-        public void onTilesAligned() {
-            linearLayout.setBackgroundColor(Color.BLACK);
-            linearLayout.setOnTouchListener(allTilesAligned);
+        public void onCheckTileAlignment(HashMap<Integer, String[]> tilePossibilities, ArrayList<Tile> gameLayout, int position) {
+        }
+
+        @Override
+        public void onAllTilesAligned() {
+            // linearLayout.setBackgroundColor(tileColor);
+            //gameLayout.setTileColor(backgoundColor);
+            // recyclerView.setAdapter(new TileAdapter(gameLayout));
+            button.setOnTouchListener(allTilesAligned);
+            button.setBackgroundColor(Color.alpha(0));
+            button.setTextColor(tileColor);
+            button.setText("NEXT");
         }
     };
 
@@ -57,13 +76,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mP3november = new MediaPlayer().create(this, R.raw.bensound_november);
         button = (Button) findViewById(R.id.activity_button);
         linearLayout = (LinearLayout) findViewById(R.id.activity_main_LinearLayout);
         recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
+        button.setBackgroundColor(Color.alpha(0));
         setValues();
         linearLayout.setBackgroundColor(backgoundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor);
-        gameLayout.setListener(tileAlignedListener);
+        gameLayout = new GameLayout(rows, columns, tileColor, backgoundColor);
+        gameLayout.createGameTiles();
+        gameLayout.setListener(tileAlignmentListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
@@ -73,19 +95,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(new TileAdapter(gameLayout));
         Log.d(TAG, "onCreate: " + gameLayout.getGameTiles());
-
-        //temp button used for testing
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setValues();
-                gameLayout.resetGame(rows, columns, tileColor);
-                gridLayoutManager.setSpanCount(columns);
-                recyclerView.setAdapter(new TileAdapter(gameLayout));
-                Log.d(TAG, "onClick: " + tileColor);
-            }
-        });
         Log.d(TAG, "onCreate: " + gameLayout.getCorrectlyOrientedTileSize());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        mP3november.setLooping(true);
+//        mP3november.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mP3november.setLooping(true);
+        mP3november.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mP3november.pause();
+        super.onStop();
+
     }
 
     @Override
@@ -103,12 +134,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-        rows = rand.nextInt(8) + 4;
-        columns = rand.nextInt(5) + 4;
-        red = rand.nextInt(56) + 200;
-        green = rand.nextInt(56) + 200;
-        blue = rand.nextInt(56) + 200;
-        backgoundColor = Color.rgb(red, green, blue);
-        tileColor = Color.rgb((int) (red * .5 + 10), (int) (green * .5 + 10), (int) (blue * .5 + 10));
+        rows = rand.nextInt(9) + 5;
+        columns = rand.nextInt(5) + 5;
+        saturation = .1f;
+        value = 1f;
+        hue = rand.nextFloat() * 360;
+        backgoundColor = Color.HSVToColor(new float[]{hue, saturation, value});
+        tileColor = Color.BLACK;
     }
+
+
 }

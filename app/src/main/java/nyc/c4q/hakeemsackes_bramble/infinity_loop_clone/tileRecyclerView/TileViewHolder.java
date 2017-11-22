@@ -1,13 +1,10 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
@@ -22,35 +19,41 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(final int position) {
+        //here i'll run color change animations
         final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileId(tile);
+        if (tile.getTileType() == 3) {
+            tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
+            tile.setOrientation((tile.getOrientation() % 2));
+        }
         if (tile.getTileType() == 5 || tile.getTileType() == 0 || tile.getOrientation() == tile.getCorrectOrientation()) {
             mGameLayout.addCorrectedTile(position);
         }
-        if (tile.getTileType() == 3) {
-            tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
-        }
+
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tile.getTileType() == 3) {
-                    tile.setOrientation(((tile.getOrientation() + 1) % 2));
-                } else {
-                    tile.setOrientation(((tile.getOrientation() + 1) % 4));
-                }
-                itemView.setRotation(tile.getOrientation() * 90);
-
-                if (tile.getTileType() < 5 && tile.getTileType() > 0) {
-                    if (tile.getOrientation() == tile.getCorrectOrientation()) {
-                        mGameLayout.addCorrectedTile(position);
+                if (mGameLayout.getGameTiles().size() != mGameLayout.getCorrectlyOrientedTileSize()) {
+                    int oldPos = tile.getOrientation();
+                    if (tile.getTileType() == 3) {
+                        tile.setOrientation(((tile.getOrientation() + 1) % 2));
                     } else {
-                        mGameLayout.removeWrongTile(position);
+                        tile.setOrientation(((tile.getOrientation() + 1) % 4));
                     }
+                    ((TileView) itemView).rotateView(oldPos, tile.getOrientation());
+                    if (tile.getTileType() < 5 && tile.getTileType() > 0) {
+                        if (tile.getOrientation() == tile.getCorrectOrientation()) {
+                            mGameLayout.addCorrectedTile(position);
+                        } else {
+                            mGameLayout.removeWrongTile(position);
+                        }
+                    }
+                    if (mGameLayout.getGameTiles().size() == mGameLayout.getCorrectlyOrientedTileSize()) {
+                        mGameLayout.runAllTilesAlignedListener();
+                    }
+                } else {
+                    mGameLayout.runAllTilesAlignedListener();
                 }
-                if (mGameLayout.getGameTiles().size() == mGameLayout.getCorrectlyOrientedTileSize()) {
-                    mGameLayout.runListener();
-                }
-                Log.d(TAG, "onClick: " + tile.getOrientation() + " " + mGameLayout.getCorrectlyOrientedTileSize() + " correct " + mGameLayout.getGameTiles().size());
             }
         });
     }

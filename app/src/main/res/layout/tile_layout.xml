@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/tile_linearLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/tile_linearLayout">
-    <nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileView
-        android:id="@+id/Tile_display"
-        android:layout_width="20dp"
-        android:layout_height="20dp" />
+    android:orientation="vertical">
+
 
 </LinearLayout>

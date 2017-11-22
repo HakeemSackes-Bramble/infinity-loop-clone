@@ -18,7 +18,7 @@ public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       return new TileViewHolder(new TileView(parent.getContext()), gameLayout);
+       return new TileViewHolder(new TileView(parent.getContext(), gameLayout.getTileColor()), gameLayout);
     }
 
     @Override

@@ -7,12 +7,19 @@ import java.util.HashMap;
  */
 
 public class TileTypes {
-    private final int positions = 4;
-    private final String[] tileTypes = new String[]{"0", "1", "11", "101", "111", "1111"};
 
+    /*
+     * this section will be used to store different types for future configurations
+     * TODO: create method that adds square tile orientations to HashMap programmatically
+     */
     private HashMap<Integer, String[]> tiles = new HashMap<>();
 
+
     public TileTypes() {
+        addSquareTilePossibilities();
+    }
+
+    private void addSquareTilePossibilities() {
         tiles.put(0, new String[]{"0", "0000", "0000", "0000", "0000"});
         tiles.put(1, new String[]{"1", "1000", "0100", "0010", "0001"});
         tiles.put(2, new String[]{"2", "1001", "1100", "0110", "0011"});
@@ -24,5 +31,6 @@ public class TileTypes {
     public HashMap<Integer, String[]> getTiles() {
         return tiles;
     }
+
 
 }

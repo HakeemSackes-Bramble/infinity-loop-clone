@@ -1,6 +1,5 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignedListener;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,6 +17,7 @@ import static android.content.ContentValues.TAG;
 
 public class GameLayout {
 
+
     private int tileColor;
     private int rows;
     private int columns;
@@ -25,19 +25,43 @@ public class GameLayout {
     private ArrayList<Tile> gameTiles;
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
-    private TileAlignedListener listener;
-    /* I just realized current game layout can be done with a set of listeners/callbacks and the TileType class-
-        It would also allow for a much greater range of versatility and applications
-    */
-    public GameLayout(int rows, int columns, int tileColor) {
-        this.tileColor = tileColor;
-        this.rows = rows;
-        this.columns = columns;
-        gameTiles = new ArrayList<>();
-        createGameTiles();
+    private TileAlignmentListener listener;
+    private int backgroundColor;
+    private ColorEngine colorEngine;
+    private HashMap<Integer, Integer> colorSlices = new HashMap<>();
+    int num = 0;
+
+    private enum SquareTileTypes {
+
+        ZERO_PRONG(0),
+        ONE_PRONG(1),
+        TWO_PRONG_CURVE(2),
+        TWO_PRONG_STRAIGHT(3),
+        THREE_PRONG(4),
+        fourProng(5);
+        private int tyleType;
+
+        SquareTileTypes(int squareTiletype) {
+            this.tyleType = squareTiletype;
+        }
+
+        public int getTyleType() {
+            return tyleType;
+        }
     }
 
-    private void createGameTiles() {
+    public GameLayout(int rows, int columns, int tileColor, int backgroundColor) {
+        colorEngine = new ColorEngine(columns, rows);
+        colorEngine.createColorList();
+        this.tileColor = tileColor;
+        this.backgroundColor = backgroundColor;
+        this.rows = rows;
+        this.columns = columns;
+        colorSlices = colorEngine.getColors();
+        gameTiles = new ArrayList<>();
+    }
+
+    public void createGameTiles() {
         for (int i = 0; i < rows * columns; i++) {
             Tile top = null;
             Tile lefty = null;
@@ -49,15 +73,42 @@ public class GameLayout {
             }
             int tileType = getTileOptions(i, top, lefty);
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
-            gameTiles.add(new Tile(rand.nextInt(4), tileType, tileColor, correctOrientation));
+            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation);
+                addColorCornersToTile(tile, i);
+            if (i % columns == (columns - 1)){
+                num++;
+            }
+                gameTiles.add(tile);
         }
+        num = 0;
     }
+
+    private void addColorCornersToTile(Tile tile, int pos) {
+        int[] colors = new int[4];
+        int col = 0;
+        int org;
+        Log.d(TAG, "addColorCornersToTile: tile " + pos);
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                int abc = (i * 2) + j;
+                int def = pos + col + j + num;
+                colors[abc] = colorSlices.get(def);
+                Log.d(TAG, "addColorCornersToTile: " + (i * 2 + j) + " color " + colorSlices.get(pos + num + j + col));
+            }
+            col = columns + 1;
+        }
+        org = colors[2];
+        colors[2] = colors[3];
+        colors[3] = org;
+        tile.setCornerColors(colors);
+    }
+
 
     public ArrayList<Tile> getGameTiles() {
         return gameTiles;
     }
 
-    private int getTileOptions(int i, @Nullable Tile top, @Nullable Tile lefty) {
+    private int getTileOptions(int i, Tile top, Tile lefty) {
         boolean isEmptyTop = true;
         boolean isEmptyLeft = true;
         boolean topEdge = i < columns;
@@ -72,10 +123,10 @@ public class GameLayout {
         }
         if (isEmptyTop && isEmptyLeft) {
             if (bottomEdge && rightEdge) {
-                return 0;
+                return SquareTileTypes.ZERO_PRONG.getTyleType();
             }
             if (rightEdge) {
-                return 1;
+                return SquareTileTypes.ONE_PRONG.getTyleType();
             }
             if (bottomEdge) {
                 return rand.nextInt(2);
@@ -84,7 +135,7 @@ public class GameLayout {
         } else if (!isEmptyTop && isEmptyLeft) {
 
             if (bottomEdge && rightEdge) {
-                return 1;
+                return SquareTileTypes.ONE_PRONG.getTyleType();
             }
             if (rightEdge) {
                 return rand.nextInt(2) * 2 + 1;
@@ -95,18 +146,18 @@ public class GameLayout {
             return rand.nextInt(4) + 1;
         } else if (isEmptyTop) {
             if (bottomEdge && rightEdge) {
-                return 1;
-            }
-            if (bottomEdge) {
-                return rand.nextInt(2) * 2 + 1;
+                return SquareTileTypes.ONE_PRONG.getTyleType();
             }
             if (rightEdge) {
                 return rand.nextInt(2) + 1;
             }
+            if (bottomEdge) {
+                return rand.nextInt(2) * 2 + 1;
+            }
             return rand.nextInt(4) + 1;
         } else {
             if (bottomEdge && rightEdge) {
-                return 2;
+                return SquareTileTypes.TWO_PRONG_CURVE.getTyleType();
             }
             if (rightEdge || bottomEdge) {
                 return rand.nextInt(2) * 2 + 2;
@@ -135,10 +186,7 @@ public class GameLayout {
             if (rightEdge) {
                 return 0;
             }
-            if (topEdge) {
-                return 2;
-            }
-            return (prongsM1 + 3) % 4;
+            return (prongsM1 - 1) % 4;
         } else if (isEmptyLeft && !isEmptyTop) {
             if (rightEdge) {
                 return 0;
@@ -163,9 +211,8 @@ public class GameLayout {
         if (maxOption <= prongsM1) {
             maxOption = prongsM1 + 1;
         }
-        int f = (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
-        Log.d(TAG, "getOrientationOptions:  tiletype, orientation choice " + f);
-        return f;
+        return (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
+
     }
 
     public void resetGame(int rows, int columns, int tileColor) {
@@ -174,6 +221,9 @@ public class GameLayout {
         this.tileColor = tileColor;
         gameTiles.clear();
         correctlyOriented.clear();
+        colorSlices.clear();
+        colorEngine.createNewColorList(rows, columns);
+        colorSlices = colorEngine.getColors();
         createGameTiles();
     }
 
@@ -189,7 +239,7 @@ public class GameLayout {
         return correctlyOriented.size();
     }
 
-    public void setListener(TileAlignedListener listener) {
+    public void setListener(TileAlignmentListener listener) {
         this.listener = listener;
     }
 
@@ -197,7 +247,20 @@ public class GameLayout {
         this.tileColor = tileColor;
     }
 
-    public void runListener() {
-        listener.onTilesAligned();
+    public int getTileColor() {
+        return tileColor;
     }
+
+    public void runAllTilesAlignedListener() {
+        listener.onAllTilesAligned();
+    }
+
+    public ColorEngine getColorEngine() {
+        return colorEngine;
+    }
+
+    public void setColorEngine(ColorEngine colorEngine) {
+        this.colorEngine = colorEngine;
+    }
+
 }
