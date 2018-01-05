@@ -12,13 +12,13 @@ import static android.content.ContentValues.TAG;
  * Created by hakeemsackes-bramble on 11/14/17.
  */
 
-public class ColorEngine {
+public class ColorList {
     private int columns;
     private int rows;
     private Random rand = new Random();
     private HashMap<Integer, Integer> colors = new HashMap<>();
 
-    public ColorEngine(int columns, int rows) {
+    public ColorList(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
     }

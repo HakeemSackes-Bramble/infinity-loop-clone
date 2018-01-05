@@ -12,21 +12,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileView;
 
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
-    MediaPlayer mP3november;
+    private MediaPlayer mP3november;
     private int rows;
     private int columns;
     private float hue;
@@ -55,15 +54,30 @@ public class MainActivity extends AppCompatActivity {
     };
     private TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
 
-
         @Override
-        public void onCheckTileAlignment(HashMap<Integer, String[]> tilePossibilities, ArrayList<Tile> gameLayout, int position) {
+        public void checkTileAlignment(GameLayout gameLayout, View itemView, Tile tile, int position) {
+            int oldPos = tile.getOrientation();
+            if (tile.getTileType() == 3) {
+                tile.setOrientation(((tile.getOrientation() + 1) % 2));
+            } else {
+                tile.setOrientation(((tile.getOrientation() + 1) % 4));
+            }
+
+            ((TileView) itemView).rotateView(oldPos, tile.getOrientation());
+            if (tile.getTileType() < 5 && tile.getTileType() > 0) {
+                if (tile.getOrientation() == tile.getCorrectOrientation()) {
+                    gameLayout.addCorrectedTile(position);
+                } else {
+                    gameLayout.removeWrongTile(position);
+                }
+            }
+
         }
 
         @Override
         public void onAllTilesAligned() {
             // linearLayout.setBackgroundColor(tileColor);
-            //gameLayout.setTileColor(backgoundColor);
+            // gameLayout.setTileColor(backgoundColor);
             // recyclerView.setAdapter(new TileAdapter(gameLayout));
             button.setOnTouchListener(allTilesAligned);
             button.setBackgroundColor(Color.alpha(0));
@@ -77,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mP3november = new MediaPlayer().create(this, R.raw.bensound_november);
-        button = (Button) findViewById(R.id.activity_button);
-        linearLayout = (LinearLayout) findViewById(R.id.activity_main_LinearLayout);
-        recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
+        button = findViewById(R.id.activity_button);
+        linearLayout = findViewById(R.id.activity_main_LinearLayout);
+        recyclerView = findViewById(R.id.tile_grid_activity);
         button.setBackgroundColor(Color.alpha(0));
         setValues();
         linearLayout.setBackgroundColor(backgoundColor);

@@ -1,8 +1,8 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import android.view.View;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 /**
@@ -11,7 +11,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 public interface TileAlignmentListener {
 
-    void onCheckTileAlignment(HashMap<Integer, String[]> tilePossibilities, ArrayList<Tile> gameLayout, int position);
+    void checkTileAlignment(GameLayout gameLayout, View itemView, Tile tile, int position);
 
     void onAllTilesAligned();
 }

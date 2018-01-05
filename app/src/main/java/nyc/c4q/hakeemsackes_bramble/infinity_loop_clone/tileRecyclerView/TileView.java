@@ -15,7 +15,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
  * Created by hakeemsackes-bramble on 10/16/17.
  */
 
-class TileView extends View {
+public class TileView extends View {
 
     private float scale;
     private Tile tileId;
@@ -55,7 +55,6 @@ class TileView extends View {
         super.onDraw(canvas);
         drawTileType(tileId.getTileType(), canvas);
         setRotation(pivpos);
-
         setBackground(bkgdGradient);
     }
 
