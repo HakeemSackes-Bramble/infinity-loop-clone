@@ -1,8 +1,10 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views.TileView;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
@@ -12,6 +14,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 class TileViewHolder extends RecyclerView.ViewHolder {
     private GameLayout mGameLayout;
+    private static final String TAG = TileViewHolder.class.getName();
 
     public TileViewHolder(View itemView, GameLayout gameLayout) {
         super(itemView);
@@ -26,7 +29,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
             tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
             tile.setOrientation((tile.getOrientation() % 2));
         }
-        if (tile.getTileType() == 5 || tile.getTileType() == 0 || tile.getOrientation() == tile.getCorrectOrientation()) {
+        if (tile.getTileType() == 0) {
             mGameLayout.addCorrectedTile(position);
         }
 
@@ -34,13 +37,15 @@ class TileViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (mGameLayout.getGameTiles().size() != mGameLayout.getCorrectlyOrientedTileSize()) {
-                    mGameLayout.runCheckTileAlignmentListener(itemView, tile, position);
-                    if (mGameLayout.getGameTiles().size() == mGameLayout.getCorrectlyOrientedTileSize()) {
+                    ((TileView) itemView).rotateView(tile.getOrientation(), (tile.getOrientation() + 1) % 4);
+                    mGameLayout.runCheckTileAlignmentListener(tile, position);
+                    if (mGameLayout.getGameTiles().size() <= mGameLayout.getCorrectlyOrientedTileSize()) {
                         mGameLayout.runAllTilesAlignedListener();
                     }
                 } else {
                     mGameLayout.runAllTilesAlignedListener();
                 }
+                Log.d(TAG, "onClick: "+ " "+ mGameLayout.getGameTiles().size() +" "+mGameLayout.getCorrectlyOrientedTileSize());
             }
         });
     }

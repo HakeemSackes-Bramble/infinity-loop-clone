@@ -3,6 +3,7 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views.TileView;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 
 /**

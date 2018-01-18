@@ -1,8 +1,5 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
-import android.util.Log;
-import android.view.View;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,15 +7,13 @@ import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
 
 public class GameLayout {
 
-
+    private static final String TAG = GameLayout.class.getName();
     private int tileColor;
     private int rows;
     private int columns;
@@ -31,25 +26,6 @@ public class GameLayout {
     private ColorList colorList;
     private HashMap<Integer, Integer> colorSlices = new HashMap<>();
     int num = 0;
-
-    private enum SquareTileTypes {
-
-        ZERO_PRONG(0),
-        ONE_PRONG(1),
-        TWO_PRONG_CURVE(2),
-        TWO_PRONG_STRAIGHT(3),
-        THREE_PRONG(4),
-        fourProng(5);
-        private int tileType;
-
-        SquareTileTypes(int squareTiletype) {
-            this.tileType = squareTiletype;
-        }
-
-        public int getTileType() {
-            return tileType;
-        }
-    }
 
     public GameLayout(int rows, int columns, int tileColor, int backgroundColor) {
         colorList = new ColorList(columns, rows);
@@ -66,6 +42,8 @@ public class GameLayout {
         for (int i = 0; i < rows * columns; i++) {
             Tile top = null;
             Tile lefty = null;
+            Tile tile = new Tile();
+            tile.setTilePositions(checkPosition(i));
             if (i >= columns) {
                 top = gameTiles.get(i - columns);
             }
@@ -73,8 +51,12 @@ public class GameLayout {
                 lefty = gameTiles.get(i - 1);
             }
             int tileType = getTileOptions(i, top, lefty);
+            tile.setTileType(tileType);
+            tile.setProngOrientations(tilePossibilities.get(tileType));
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
-            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation);
+            tile.setCorrectOrientation(correctOrientation);
+            tile.setOrientation(rand.nextInt(4));
+            checkIfAligned(tile, i);
             addColorCornersToTile(tile, i);
             if (i % columns == (columns - 1)) {
                 num++;
@@ -84,17 +66,51 @@ public class GameLayout {
         num = 0;
     }
 
+    private void checkIfAligned(Tile tile, int position) {
+        String prongPos = tile.getStringOrientation();
+        int[] tilePositions = new int[]{
+                position - columns,
+                position + 1,
+                position + columns,
+                position - 1
+        };
+        int i;
+        for (i = 0; i < 4; i++) {
+            int surPos = (i + 2) % 4;
+            if (!tile.getTilePositions().contains(TilePositions.values()[i]) && !(i == 1 || i == 2)) {
+                Tile surroundingTile = gameTiles.get(tilePositions[i]);
+                if (prongPos.charAt(i) == surroundingTile.getStringOrientation().charAt(surPos)) {
+                    tile.makeAlignmentTrue(i);
+                    surroundingTile.makeAlignmentTrue(surPos);
+                } else {
+                    tile.makeAlignmentFalse(i);
+                    surroundingTile.makeAlignmentFalse(surPos);
+                }
+                if (surroundingTile.isProperlyAligned()) {
+                    this.addCorrectedTile(tilePositions[i]);
+                } else {
+                    this.removeWrongTile(tilePositions[i]);
+                }
+            } else if (prongPos.charAt(i) == '0') {
+                tile.makeAlignmentTrue(i);
+            }
+        }
+        if (tile.isProperlyAligned()) {
+            this.addCorrectedTile(position);
+        } else {
+            this.removeWrongTile(position);
+        }
+    }
+
     private void addColorCornersToTile(Tile tile, int pos) {
         int[] colors = new int[4];
         int col = 0;
         int org;
-        Log.d(TAG, "addColorCornersToTile: tile " + pos);
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 int abc = (i * 2) + j;
                 int def = pos + col + j + num;
                 colors[abc] = colorSlices.get(def);
-                Log.d(TAG, "addColorCornersToTile: " + (i * 2 + j) + " color " + colorSlices.get(pos + num + j + col));
             }
             col = columns + 1;
         }
@@ -103,7 +119,6 @@ public class GameLayout {
         colors[3] = org;
         tile.setCornerColors(colors);
     }
-
 
     public ArrayList<Tile> getGameTiles() {
         return gameTiles;
@@ -124,10 +139,10 @@ public class GameLayout {
         }
         if (isEmptyTop && isEmptyLeft) {
             if (bottomEdge && rightEdge) {
-                return SquareTileTypes.ZERO_PRONG.getTileType();
+                return 0;
             }
             if (rightEdge) {
-                return SquareTileTypes.ONE_PRONG.getTileType();
+                return 1;
             }
             if (bottomEdge) {
                 return rand.nextInt(2);
@@ -136,7 +151,7 @@ public class GameLayout {
         } else if (!isEmptyTop && isEmptyLeft) {
 
             if (bottomEdge && rightEdge) {
-                return SquareTileTypes.ONE_PRONG.getTileType();
+                return 1;
             }
             if (rightEdge) {
                 return rand.nextInt(2) * 2 + 1;
@@ -147,7 +162,7 @@ public class GameLayout {
             return rand.nextInt(4) + 1;
         } else if (isEmptyTop) {
             if (bottomEdge && rightEdge) {
-                return SquareTileTypes.ONE_PRONG.getTileType();
+                return 1;
             }
             if (rightEdge) {
                 return rand.nextInt(2) + 1;
@@ -158,7 +173,7 @@ public class GameLayout {
             return rand.nextInt(4) + 1;
         } else {
             if (bottomEdge && rightEdge) {
-                return SquareTileTypes.TWO_PRONG_CURVE.getTileType();
+                return 2;
             }
             if (rightEdge || bottomEdge) {
                 return rand.nextInt(2) * 2 + 2;
@@ -205,7 +220,6 @@ public class GameLayout {
                 return prongsM1 + 1;
             }
         }
-        Log.d(TAG, "getOrientationOptions: " + prongsM1 + " max options " + maxOption);
         if (prongsM1 < 0) {
             return 1;
         }
@@ -226,6 +240,26 @@ public class GameLayout {
         colorList.createNewColorList(rows, columns);
         colorSlices = colorList.getColors();
         createGameTiles();
+    }
+
+    private HashSet<TilePositions> checkPosition(int i) {
+        HashSet<TilePositions> positions = new HashSet<>();
+        boolean topEdge = i < columns;
+        boolean bottomEdge = i >= ((rows * columns) - columns);
+        boolean rightEdge = i % columns == columns - 1;
+        boolean leftEdge = i % columns == 0;
+
+        if (topEdge)
+            positions.add(TilePositions.TOP_EDGE);
+        if (bottomEdge)
+            positions.add(TilePositions.BOTTOM_EDGE);
+        if (rightEdge)
+            positions.add(TilePositions.RIGHT_EDGE);
+        if (leftEdge)
+            positions.add(TilePositions.LEFT_EDGE);
+        if (positions.size() == 0)
+            positions.add(TilePositions.CENTER);
+        return positions;
     }
 
     public void addCorrectedTile(int position) {
@@ -256,8 +290,8 @@ public class GameLayout {
         listener.onAllTilesAligned();
     }
 
-    public void runCheckTileAlignmentListener(View itemView, Tile tile, int position) {
-        listener.checkTileAlignment(this, itemView, tile, position);
+    public void runCheckTileAlignmentListener(Tile tile, int position) {
+        listener.checkTileAlignment(this, tile, position);
     }
 
     public ColorList getColorList() {

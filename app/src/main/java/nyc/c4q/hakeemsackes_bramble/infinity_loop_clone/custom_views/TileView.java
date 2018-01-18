@@ -1,4 +1,4 @@
-package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
+package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -27,7 +27,6 @@ public class TileView extends View {
     private int newPos;
     private Paint fillPaint;
     private int mColor;
-    private float pivpos;
     private GradientDrawable bkgdGradient;
 
 
@@ -54,8 +53,7 @@ public class TileView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawTileType(tileId.getTileType(), canvas);
-        setRotation(pivpos);
-        setBackground(bkgdGradient);
+        setRotation(posToDegrees(tileId.getOrientation()));
     }
 
     private void drawTileType(int tileType, Canvas canvas) {
@@ -97,7 +95,6 @@ public class TileView extends View {
         paint.setStrokeWidth(sizePX / 10);
         paint.setAntiAlias(true);
         oldPos = tileId.getOrientation();
-        pivpos = oldPos * 90;
         mColor = tileId.getCornerColors()[tileId.getOrientation()];
 
     }
@@ -109,8 +106,12 @@ public class TileView extends View {
             newPos = oldPos + 1;
         }
         ObjectAnimator tileViewObjectAnimator = ObjectAnimator.ofFloat(this,
-                "rotation", oldPos * 90, newPos * 90);
-        tileViewObjectAnimator.setDuration(200);
+                "rotation", posToDegrees(oldPos), posToDegrees(newPos));
+        tileViewObjectAnimator.setDuration(160);
         tileViewObjectAnimator.start();
+    }
+
+    private int posToDegrees(int pos) {
+        return pos * 90;
     }
 }
