@@ -23,11 +23,6 @@ public class TileView extends View {
     private int sizeDP = 36;
     private float sizePX;
     private int color;
-    private int oldPos;
-    private int newPos;
-    private Paint fillPaint;
-    private int mColor;
-    private GradientDrawable bkgdGradient;
 
 
     public TileView(Context context, int color) {
@@ -94,14 +89,9 @@ public class TileView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(sizePX / 10);
         paint.setAntiAlias(true);
-        oldPos = tileId.getOrientation();
-        mColor = tileId.getCornerColors()[tileId.getOrientation()];
-
     }
 
     public void rotateView(int oldPos, int newPos) {
-        this.oldPos = oldPos;
-        this.newPos = newPos;
         if (oldPos > newPos) {
             newPos = oldPos + 1;
         }

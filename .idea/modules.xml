@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/infinity-loop-clone.iml" filepath="$PROJECT_DIR$/infinity-loop-clone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/infinity-loop-clone-app.iml" filepath="$PROJECT_DIR$/app/infinity-loop-clone-app.iml" group="infinity-loop-clone/app" />
+      <module fileurl="file://$PROJECT_DIR$/infinity-loop-infinity-loop-clone.iml" filepath="$PROJECT_DIR$/infinity-loop-infinity-loop-clone.iml" group="infinity-loop-clone" />
     </modules>
   </component>
 </project>
