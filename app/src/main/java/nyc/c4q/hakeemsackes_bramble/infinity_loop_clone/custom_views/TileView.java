@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;

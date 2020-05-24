@@ -278,10 +278,6 @@ public class GameLayout {
         this.listener = listener;
     }
 
-    public void setTileColor(int tileColor) {
-        this.tileColor = tileColor;
-    }
-
     public int getTileColor() {
         return tileColor;
     }
@@ -293,13 +289,4 @@ public class GameLayout {
     public void runCheckTileAlignmentListener(Tile tile, int position) {
         listener.checkTileAlignment(this, tile, position);
     }
-
-    public ColorList getColorList() {
-        return colorList;
-    }
-
-    public void setColorList(ColorList colorList) {
-        this.colorList = colorList;
-    }
-
 }

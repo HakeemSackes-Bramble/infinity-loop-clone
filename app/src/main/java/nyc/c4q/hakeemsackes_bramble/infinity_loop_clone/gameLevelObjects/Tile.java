@@ -10,11 +10,10 @@ public class Tile {
     private int orientation;
     private int tileType;
     private int correctOrientation;
-    int[] cornerColors;
-    boolean[] alignment = new boolean[4];
-    private String[] prongOrientations = new String[5];
+    private int[] cornerColors;
+    private boolean[] alignment = new boolean[4];
+    private String[] prongOrientations;
     private HashSet<TilePositions> tilePositions;
-    private int prongCount;
 
     public String getStringOrientation() {
         return stringOrientation;
@@ -22,16 +21,12 @@ public class Tile {
 
     private String stringOrientation;
 
-    public Tile() {
-    }
-
-    public Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
+    Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
         this.orientation = orientation;
         this.prongOrientations = prongOrientations;
         stringOrientation = prongOrientations[orientation + 1];
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
-        this.prongCount = stringOrientation.replaceAll("0", "").length();
     }
 
 
@@ -56,11 +51,7 @@ public class Tile {
         this.correctOrientation = correctOrientation;
     }
 
-    public int[] getCornerColors() {
-        return cornerColors;
-    }
-
-    public void setCornerColors(int[] cornerColors) {
+    void setCornerColors(int[] cornerColors) {
         this.cornerColors = cornerColors;
     }
 
@@ -68,7 +59,7 @@ public class Tile {
         return tilePositions;
     }
 
-    public void setTilePositions(HashSet<TilePositions> tilePositions) {
+    void setTilePositions(HashSet<TilePositions> tilePositions) {
         this.tilePositions = tilePositions;
     }
 
@@ -81,44 +72,14 @@ public class Tile {
     }
 
     public boolean isProperlyAligned() {
-        boolean isAligned =
-                alignment[0]
-                && alignment[1]
-                && alignment[2]
-                && alignment[3];
-
-        return isAligned;
+      return alignment[0] && alignment[1] && alignment[2] && alignment[3];
     }
 
-    public boolean[] getAlignment() {
-        return alignment;
-    }
-
-    public void setTileType(int tileType) {
+    void setTileType(int tileType) {
         this.tileType = tileType;
     }
 
-    public void setAlignment(boolean[] alignment) {
-        this.alignment = alignment;
-    }
-
-    public String[] getProngOrientations() {
-        return prongOrientations;
-    }
-
-    public void setProngOrientations(String[] prongOrientations) {
+    void setProngOrientations(String[] prongOrientations) {
         this.prongOrientations = prongOrientations;
-    }
-
-    public int getProngCount() {
-        return prongCount;
-    }
-
-    public void setProngCount(int prongCount) {
-        this.prongCount = prongCount;
-    }
-
-    public void setStringOrientation(String stringOrientation) {
-        this.stringOrientation = stringOrientation;
     }
 }
