@@ -10,7 +10,6 @@ public class Tile {
     private int orientation;
     private int tileType;
     private int correctOrientation;
-    private int[] cornerColors;
     private boolean[] alignment = new boolean[4];
     private String[] prongOrientations;
     private HashSet<TilePositions> tilePositions;
@@ -51,10 +50,6 @@ public class Tile {
         this.correctOrientation = correctOrientation;
     }
 
-    void setCornerColors(int[] cornerColors) {
-        this.cornerColors = cornerColors;
-    }
-
     public HashSet<TilePositions> getTilePositions() {
         return tilePositions;
     }
@@ -77,9 +72,5 @@ public class Tile {
 
     void setTileType(int tileType) {
         this.tileType = tileType;
-    }
-
-    void setProngOrientations(String[] prongOrientations) {
-        this.prongOrientations = prongOrientations;
     }
 }

@@ -28,10 +28,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mP3november;
     private int rows;
     private int columns;
-    private float hue;
-    private float saturation;
-    private float value;
-    private int backgoundColor;
+    private int backgroundColor;
     private int tileColor;
     private static final String TAG = MainActivity.class.getName();
     private Random rand = new Random();
@@ -39,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            setValues();
-            linearLayout.setBackgroundColor(backgoundColor);
+            MainActivity.this.setValues();
+            linearLayout.setBackgroundColor(backgroundColor);
             gameLayout.resetGame(rows, columns, tileColor);
             gridLayoutManager.setSpanCount(columns);
             recyclerView.setAdapter(new TileAdapter(gameLayout));
@@ -110,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mP3november = new MediaPlayer().create(this, R.raw.bensound_november);
         button = findViewById(R.id.activity_button);
-        linearLayout = (LinearLayout) findViewById(R.id.activity_main_LinearLayout);
-        recyclerView = (RecyclerView) findViewById(R.id.tile_grid_activity);
+        linearLayout = findViewById(R.id.activity_main_LinearLayout);
+        recyclerView = findViewById(R.id.tile_grid_activity);
         button.setBackgroundColor(Color.alpha(0));
         setValues();
-        linearLayout.setBackgroundColor(backgoundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor, backgoundColor);
+        linearLayout.setBackgroundColor(backgroundColor);
+        gameLayout = new GameLayout(rows, columns, tileColor);
         gameLayout.createGameTiles();
         gameLayout.setListener(tileAlignmentListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
@@ -163,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
     private void setValues() {
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
-        saturation = .1f;
-        value = 1f;
-        hue = rand.nextFloat() * 360;
-        backgoundColor = Color.HSVToColor(new float[]{hue, saturation, value});
+        float hue = rand.nextFloat() * 360;
+        float saturation = .1f;
+        float value = 1f;
+        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
         tileColor = Color.BLACK;
     }
 }

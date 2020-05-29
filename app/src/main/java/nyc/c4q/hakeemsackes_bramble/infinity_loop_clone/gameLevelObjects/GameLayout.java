@@ -22,16 +22,14 @@ public class GameLayout {
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
-    private int backgroundColor;
     private ColorList colorList;
-    private HashMap<Integer, Integer> colorSlices = new HashMap<>();
+    private HashMap<Integer, Integer> colorSlices;
     int num = 0;
 
-    public GameLayout(int rows, int columns, int tileColor, int backgroundColor) {
+    public GameLayout(int rows, int columns, int tileColor) {
         colorList = new ColorList(columns, rows);
         colorList.createColorList();
         this.tileColor = tileColor;
-        this.backgroundColor = backgroundColor;
         this.rows = rows;
         this.columns = columns;
         colorSlices = colorList.getColors();
@@ -42,8 +40,6 @@ public class GameLayout {
         for (int i = 0; i < rows * columns; i++) {
             Tile top = null;
             Tile lefty = null;
-            Tile tile = new Tile();
-            tile.setTilePositions(checkPosition(i));
             if (i >= columns) {
                 top = gameTiles.get(i - columns);
             }
@@ -51,13 +47,16 @@ public class GameLayout {
                 lefty = gameTiles.get(i - 1);
             }
             int tileType = getTileOptions(i, top, lefty);
-            tile.setTileType(tileType);
-            tile.setProngOrientations(tilePossibilities.get(tileType));
+            /**
+             * new Tile(orientation, tileType, correctOrientation, prongOrientations)
+             */
+            Tile tile = new Tile(rand.nextInt(4), tileType, getOrientationOption(tileType, i, top, lefty), tilePossibilities.get(tileType));
+            tile.setTilePositions(checkPosition(i));
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(rand.nextInt(4));
             checkIfAligned(tile, i);
-            addColorCornersToTile(tile, i);
+            addColorCornersToTile(i);
             if (i % columns == (columns - 1)) {
                 num++;
             }
@@ -102,7 +101,7 @@ public class GameLayout {
         }
     }
 
-    private void addColorCornersToTile(Tile tile, int pos) {
+    private void addColorCornersToTile(int pos) {
         int[] colors = new int[4];
         int col = 0;
         int org;
@@ -117,7 +116,6 @@ public class GameLayout {
         org = colors[2];
         colors[2] = colors[3];
         colors[3] = org;
-        tile.setCornerColors(colors);
     }
 
     public ArrayList<Tile> getGameTiles() {
