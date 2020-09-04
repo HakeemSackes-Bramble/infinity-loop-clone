@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
@@ -19,6 +21,12 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
+
+import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.BOTTOM_EDGE;
+import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.LEFT_EDGE;
+import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.NULL_POS;
+import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.RIGHT_EDGE;
+import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.TOP_EDGE;
 
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
@@ -51,55 +59,83 @@ public class MainActivity extends AppCompatActivity {
     private TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
 
         @Override
-        public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position) {
+        public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position, int oldPos, int newPos) {
 
-            int oldPos = tile.getOrientation();
-            int newPos = (oldPos + 1) % 4;
             tile.setOrientation(newPos);
             String prongPos = tile.getStringOrientation();
-            int[] tilePositions = new int[]{
+            HashSet<TilePositions> positionlist = tile.getTilePositions();
+            Iterator<TilePositions> positionsIterator = positionlist.iterator();
+            TilePositions positionParser = positionsIterator.next();
+            int[] surroundingTilePositions = new int[]{
                     position - columns,
                     position + 1,
                     position + columns,
                     position - 1
             };
-            int i;
-            for (i = 0; i < prongPos.length(); i++) {
+            for (int i = 0; i < prongPos.length(); i++) {
                 int surPos = (i + 2) % 4;
-                if (!tile.getTilePositions().contains(TilePositions.values()[i])) {
-                    Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
-                    if (prongPos.charAt(i) == surroundingTile.getStringOrientation().charAt(surPos)) {
-                        tile.makeAlignmentTrue(i);
-                        surroundingTile.makeAlignmentTrue(surPos);
-                    } else {
-                        tile.makeAlignmentFalse(i);
-                        surroundingTile.makeAlignmentFalse(surPos);
-                    }
-                    if (surroundingTile.isProperlyAligned()) {
-                        gameLayout.addCorrectedTile(tilePositions[i]);
-                    } else {
-                        gameLayout.removeWrongTile(tilePositions[i]);
-                    }
+                // check center tiles
 
-                } else if (prongPos.charAt(i) == '0') {
-                    tile.makeAlignmentTrue(i);
-                }
-                if (tile.isProperlyAligned()) {
-                    gameLayout.addCorrectedTile(position);
+                if (surroundingTilePositions[i] < 0 && i == 0) {
+                    if (tile.getStringOrientation().charAt(i) == '0') {
+                        tile.makeAlignmentTrue(i);
+                    } else if (tile.getStringOrientation().charAt(i) == '1') {
+                        tile.makeAlignmentFalse(i);
+                    }
+                } else if ((surroundingTilePositions[i] >= (rows * columns) || surroundingTilePositions[i] % columns == 0) && i == 1) {
+                    if (tile.getStringOrientation().charAt(i) == '0') {
+                        tile.makeAlignmentTrue(i);
+                    } else if (tile.getStringOrientation().charAt(i) == '1') {
+                        tile.makeAlignmentFalse(i);
+                    }
+                } else if (surroundingTilePositions[i] >= (rows * columns) && i == 2) {
+                    if (tile.getStringOrientation().charAt(i) == '0') {
+                        tile.makeAlignmentTrue(i);
+                    } else if (tile.getStringOrientation().charAt(i) == '1') {
+                        tile.makeAlignmentFalse(i);
+                    }
+                } else if ((surroundingTilePositions[i] < 0 || surroundingTilePositions[i] % columns == columns - 1) && i == 3) {
+                    if (tile.getStringOrientation().charAt(i) == '0') {
+                        tile.makeAlignmentTrue(i);
+                    } else if (tile.getStringOrientation().charAt(i) == '1') {
+                        tile.makeAlignmentFalse(i);
+                    }
                 } else {
-                    gameLayout.removeWrongTile(position);
+                    Log.i(TAG, "checkTileAlignment: " + i);
+                    checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
+            if (tile.isProperlyAligned()) {
+                gameLayout.addCorrectedTile(position);
+            } else {
+                gameLayout.removeWrongTile(position);
+            }
+
         }
 
         @Override
         public void onAllTilesAligned() {
             button.setOnTouchListener(allTilesAligned);
-            button.setBackgroundColor(Color.alpha(0));
             button.setTextColor(tileColor);
             button.setText("NEXT");
         }
     };
+
+    private void checkSurroundingTiles(int i, String prongPosition, int[] tilePositions, Tile currentTile, int adjacentTileProngPosition) {
+        Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
+        if (prongPosition.charAt(i) == surroundingTile.getStringOrientation().charAt(adjacentTileProngPosition)) {
+            currentTile.makeAlignmentTrue(i);
+            surroundingTile.makeAlignmentTrue(adjacentTileProngPosition);
+        } else {
+            currentTile.makeAlignmentFalse(i);
+            surroundingTile.makeAlignmentFalse(adjacentTileProngPosition);
+        }
+        if (surroundingTile.isProperlyAligned()) {
+            gameLayout.addCorrectedTile(tilePositions[i]);
+        } else {
+            gameLayout.removeWrongTile(tilePositions[i]);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         button.setBackgroundColor(Color.alpha(0));
         setValues();
         linearLayout.setBackgroundColor(backgroundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor);
+        gameLayout = new GameLayout(rows, columns, tileColor, tileAlignmentListener);
         gameLayout.createGameTiles();
         gameLayout.setListener(tileAlignmentListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {

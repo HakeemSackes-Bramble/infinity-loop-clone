@@ -69,8 +69,4 @@ public class Tile {
     public boolean isProperlyAligned() {
       return alignment[0] && alignment[1] && alignment[2] && alignment[3];
     }
-
-    void setTileType(int tileType) {
-        this.tileType = tileType;
-    }
 }

@@ -14,6 +14,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentL
 public class GameLayout {
 
     private static final String TAG = GameLayout.class.getName();
+    private TileAlignmentListener tileAlignmentListener;
     private int tileColor;
     private int rows;
     private int columns;
@@ -26,9 +27,10 @@ public class GameLayout {
     private HashMap<Integer, Integer> colorSlices;
     int num = 0;
 
-    public GameLayout(int rows, int columns, int tileColor) {
+    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {
         colorList = new ColorList(columns, rows);
         colorList.createColorList();
+        this.tileAlignmentListener = tileAlignmentListener;
         this.tileColor = tileColor;
         this.rows = rows;
         this.columns = columns;
@@ -55,12 +57,14 @@ public class GameLayout {
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(rand.nextInt(4));
-            checkIfAligned(tile, i);
             addColorCornersToTile(i);
             if (i % columns == (columns - 1)) {
                 num++;
             }
             gameTiles.add(tile);
+        }
+        for (int i = 0; i < gameTiles.size(); i++) {
+            tileAlignmentListener.checkTileAlignment(this, gameTiles.get(i), i, gameTiles.get(i).getOrientation(), gameTiles.get(i).getOrientation());
         }
         num = 0;
     }
@@ -285,6 +289,6 @@ public class GameLayout {
     }
 
     public void runCheckTileAlignmentListener(Tile tile, int position) {
-        listener.checkTileAlignment(this, tile, position);
+        listener.checkTileAlignment(this, tile, position, tile.getOrientation(), (tile.getOrientation() + 1) % 4);
     }
 }

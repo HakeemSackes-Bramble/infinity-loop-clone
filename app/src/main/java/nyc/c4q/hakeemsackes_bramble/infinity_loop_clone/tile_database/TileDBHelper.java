@@ -24,8 +24,8 @@ public class TileDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = " CREATE TABLE " + TABLE_PASTGAMES + "(" + COLUMN_GAMEID + " INTEGER PRIMARY KEY AUTOINCREMENT "
-                + COLUMN_COLORID + " TEXT " + ");";
+        String query = " CREATE TABLE " + TABLE_PASTGAMES + "(" + COLUMN_GAMEID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                + COLUMN_COLORID + ", TEXT " + ");";
         db.execSQL(query);
     }
 

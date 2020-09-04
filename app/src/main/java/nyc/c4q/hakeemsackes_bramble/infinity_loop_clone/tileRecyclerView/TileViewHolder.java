@@ -22,7 +22,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(final int position) {
-        //here i'll run color change animations
+
         final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileId(tile);
         if (tile.getTileType() == 3) {
@@ -36,6 +36,9 @@ class TileViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * here i'll run color change animations
+                 */
                 if (mGameLayout.getGameTiles().size() != mGameLayout.getCorrectlyOrientedTileSize()) {
                     ((TileView) itemView).rotateView(tile.getOrientation(), (tile.getOrientation() + 1) % 4);
                     mGameLayout.runCheckTileAlignmentListener(tile, position);
@@ -45,10 +48,10 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                 } else {
                     mGameLayout.runAllTilesAlignedListener();
                 }
-                Log.d(TAG, "onClick: "+ " "+ mGameLayout.getGameTiles().size() +" "+mGameLayout.getCorrectlyOrientedTileSize());
+                Log.d(TAG, "onClick: " + " " + mGameLayout.getGameTiles().size() + " " + mGameLayout.getCorrectlyOrientedTileSize());
             }
         });
+
+
     }
-
-
 }

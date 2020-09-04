@@ -31,6 +31,4 @@ public class TileTypes {
     public HashMap<Integer, String[]> getTiles() {
         return tiles;
     }
-
-
 }
