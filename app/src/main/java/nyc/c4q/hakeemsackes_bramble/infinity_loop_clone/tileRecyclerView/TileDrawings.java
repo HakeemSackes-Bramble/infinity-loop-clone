@@ -17,7 +17,7 @@ public class TileDrawings {
         this.mView = view;
     }
 
-    private void drawSquareTile(int tileType, Canvas canvas) {
+    public void drawSquareTile(int tileType, Canvas canvas) {
         float CENTER_X = mView.getWidth() / 2;
         float CENTER_Y = mView.getHeight() / 2;
         if (tileType == 0) {
@@ -40,9 +40,7 @@ public class TileDrawings {
         } else if (tileType == 5) {
             //four prong tile
             canvas.drawCircle(0, 0, CENTER_Y, mPaint);
-            canvas.drawCircle(0, mView.getHeight(), CENTER_Y, mPaint);
             canvas.drawCircle(mView.getWidth(), mView.getHeight(), CENTER_Y, mPaint);
-            canvas.drawCircle(mView.getWidth(), 0, CENTER_Y, mPaint);
         }
     }
 }

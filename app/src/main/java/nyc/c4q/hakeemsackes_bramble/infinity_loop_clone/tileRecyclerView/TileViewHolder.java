@@ -24,7 +24,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     public void bind(final int position) {
 
         final Tile tile = mGameLayout.getGameTiles().get(position);
-        ((TileView) itemView).setTileId(tile);
+        ((TileView) itemView).setTileValues(tile);
         if (tile.getTileType() == 3) {
             tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
             tile.setOrientation((tile.getOrientation() % 2));

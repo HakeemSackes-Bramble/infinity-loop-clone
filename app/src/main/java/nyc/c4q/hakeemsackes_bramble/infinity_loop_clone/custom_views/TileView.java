@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileDrawings;
 
 /**
  * Created by hakeemsackes-bramble on 10/16/17.
@@ -22,6 +23,7 @@ public class TileView extends View {
     private int sizeDP = 36;
     private float sizePX;
     private int color;
+    private TileDrawings tileDrawings;
 
 
     public TileView(Context context, int color) {
@@ -51,42 +53,17 @@ public class TileView extends View {
     }
 
     private void drawTileType(int tileType, Canvas canvas) {
-        float CENTER_X = getWidth() / 2;
-        float CENTER_Y = getHeight() / 2;
-        if (tileType == 0) {
-            //blank tile
-        } else if (tileType == 1) {
-            // circle line tile
-            canvas.drawCircle(CENTER_X, CENTER_Y, getHeight() / 4, paint);
-            canvas.drawCircle(CENTER_X, CENTER_Y, getHeight() / 16, paint);
-            canvas.drawLine(CENTER_X, CENTER_Y, CENTER_X, 0, paint);
-        } else if (tileType == 2) {
-            //quarter circle tile
-            canvas.drawCircle(0, 0, CENTER_Y, paint);
-            canvas.drawCircle(CENTER_X, CENTER_Y, getHeight() / 100, paint);
-        } else if (tileType == 3) {
-            //line tile
-            canvas.drawLine(CENTER_X, getHeight(), CENTER_X, 0, paint);
-        } else if (tileType == 4) {
-            //three prong tile
-            canvas.drawCircle(0, 0, CENTER_Y, paint);
-            canvas.drawCircle(0, getHeight(), CENTER_Y, paint);
-            canvas.drawCircle(CENTER_X, CENTER_Y, getHeight() / 100, paint);
-        } else if (tileType == 5) {
-            //four prong tile
-            canvas.drawCircle(0, 0, CENTER_Y, paint);
-            canvas.drawCircle(getWidth(), getHeight(), CENTER_Y, paint);
-            canvas.drawCircle(CENTER_X, CENTER_Y, getHeight() / 100, paint);
-        }
+        tileDrawings.drawSquareTile(tileType, canvas);
     }
 
-    public void setTileId(Tile tileId) {
+    public void setTileValues(Tile tileId) {
         this.tileId = tileId;
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(sizePX / 10);
         paint.setAntiAlias(true);
+        tileDrawings = new TileDrawings(paint,this);
     }
 
     public void rotateView(int oldPos, int newPos) {
