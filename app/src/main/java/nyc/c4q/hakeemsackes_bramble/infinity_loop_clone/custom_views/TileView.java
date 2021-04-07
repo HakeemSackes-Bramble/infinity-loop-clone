@@ -54,7 +54,6 @@ public class TileView extends View {
         float CENTER_X = getWidth() / 2;
         float CENTER_Y = getHeight() / 2;
         if (tileType == 0) {
-
             //blank tile
         } else if (tileType == 1) {
             // circle line tile

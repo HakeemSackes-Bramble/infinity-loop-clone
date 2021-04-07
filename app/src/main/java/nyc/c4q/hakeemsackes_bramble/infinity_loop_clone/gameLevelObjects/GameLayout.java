@@ -24,7 +24,6 @@ public class GameLayout {
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
     private ColorList colorList;
-    private HashMap<Integer, Integer> colorSlices;
     int num = 0;
 
     public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {
@@ -34,7 +33,6 @@ public class GameLayout {
         this.tileColor = tileColor;
         this.rows = rows;
         this.columns = columns;
-        colorSlices = colorList.getColors();
         gameTiles = new ArrayList<>();
     }
 
@@ -57,7 +55,6 @@ public class GameLayout {
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(rand.nextInt(4));
-            addColorCornersToTile(i);
             if (i % columns == (columns - 1)) {
                 num++;
             }
@@ -67,59 +64,6 @@ public class GameLayout {
             tileAlignmentListener.checkTileAlignment(this, gameTiles.get(i), i, gameTiles.get(i).getOrientation(), gameTiles.get(i).getOrientation());
         }
         num = 0;
-    }
-
-    private void checkIfAligned(Tile tile, int position) {
-        String prongPos = tile.getStringOrientation();
-        int[] tilePositions = new int[]{
-                position - columns,
-                position + 1,
-                position + columns,
-                position - 1
-        };
-        int i;
-        for (i = 0; i < 4; i++) {
-            int surPos = (i + 2) % 4;
-            if (!tile.getTilePositions().contains(TilePositions.values()[i]) && !(i == 1 || i == 2)) {
-                Tile surroundingTile = gameTiles.get(tilePositions[i]);
-                if (prongPos.charAt(i) == surroundingTile.getStringOrientation().charAt(surPos)) {
-                    tile.makeAlignmentTrue(i);
-                    surroundingTile.makeAlignmentTrue(surPos);
-                } else {
-                    tile.makeAlignmentFalse(i);
-                    surroundingTile.makeAlignmentFalse(surPos);
-                }
-                if (surroundingTile.isProperlyAligned()) {
-                    this.addCorrectedTile(tilePositions[i]);
-                } else {
-                    this.removeWrongTile(tilePositions[i]);
-                }
-            } else if (prongPos.charAt(i) == '0') {
-                tile.makeAlignmentTrue(i);
-            }
-        }
-        if (tile.isProperlyAligned()) {
-            this.addCorrectedTile(position);
-        } else {
-            this.removeWrongTile(position);
-        }
-    }
-
-    private void addColorCornersToTile(int pos) {
-        int[] colors = new int[4];
-        int col = 0;
-        int org;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                int abc = (i * 2) + j;
-                int def = pos + col + j + num;
-                colors[abc] = colorSlices.get(def);
-            }
-            col = columns + 1;
-        }
-        org = colors[2];
-        colors[2] = colors[3];
-        colors[3] = org;
     }
 
     public ArrayList<Tile> getGameTiles() {
@@ -238,9 +182,7 @@ public class GameLayout {
         this.tileColor = tileColor;
         gameTiles.clear();
         correctlyOriented.clear();
-        colorSlices.clear();
         colorList.createNewColorList(rows, columns);
-        colorSlices = colorList.getColors();
         createGameTiles();
     }
 

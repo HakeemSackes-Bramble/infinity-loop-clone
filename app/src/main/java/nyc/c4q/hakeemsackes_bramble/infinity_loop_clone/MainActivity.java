@@ -18,22 +18,15 @@ import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
-
-import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.BOTTOM_EDGE;
-import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.LEFT_EDGE;
-import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.NULL_POS;
-import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.RIGHT_EDGE;
-import static nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions.TOP_EDGE;
 
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
-    MediaPlayer mP3november;
+    private MediaPlayer mP3november;
     private int rows;
     private int columns;
     private int backgroundColor;
@@ -63,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
             tile.setOrientation(newPos);
             String prongPos = tile.getStringOrientation();
-            HashSet<TilePositions> positionlist = tile.getTilePositions();
-            Iterator<TilePositions> positionsIterator = positionlist.iterator();
-            TilePositions positionParser = positionsIterator.next();
             int[] surroundingTilePositions = new int[]{
                     position - columns,
                     position + 1,
@@ -75,33 +65,15 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < prongPos.length(); i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles
-
                 if (surroundingTilePositions[i] < 0 && i == 0) {
-                    if (tile.getStringOrientation().charAt(i) == '0') {
-                        tile.makeAlignmentTrue(i);
-                    } else if (tile.getStringOrientation().charAt(i) == '1') {
-                        tile.makeAlignmentFalse(i);
-                    }
+                    checkForEdgeFacingProngs(tile, i);
                 } else if ((surroundingTilePositions[i] >= (rows * columns) || surroundingTilePositions[i] % columns == 0) && i == 1) {
-                    if (tile.getStringOrientation().charAt(i) == '0') {
-                        tile.makeAlignmentTrue(i);
-                    } else if (tile.getStringOrientation().charAt(i) == '1') {
-                        tile.makeAlignmentFalse(i);
-                    }
+                    checkForEdgeFacingProngs(tile, i);
                 } else if (surroundingTilePositions[i] >= (rows * columns) && i == 2) {
-                    if (tile.getStringOrientation().charAt(i) == '0') {
-                        tile.makeAlignmentTrue(i);
-                    } else if (tile.getStringOrientation().charAt(i) == '1') {
-                        tile.makeAlignmentFalse(i);
-                    }
+                    checkForEdgeFacingProngs(tile, i);
                 } else if ((surroundingTilePositions[i] < 0 || surroundingTilePositions[i] % columns == columns - 1) && i == 3) {
-                    if (tile.getStringOrientation().charAt(i) == '0') {
-                        tile.makeAlignmentTrue(i);
-                    } else if (tile.getStringOrientation().charAt(i) == '1') {
-                        tile.makeAlignmentFalse(i);
-                    }
+                    checkForEdgeFacingProngs(tile, i);
                 } else {
-                    Log.i(TAG, "checkTileAlignment: " + i);
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
@@ -110,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 gameLayout.removeWrongTile(position);
             }
-
         }
 
         @Override
@@ -120,6 +91,14 @@ public class MainActivity extends AppCompatActivity {
             button.setText("NEXT");
         }
     };
+
+    private void checkForEdgeFacingProngs(Tile tile, int i) {
+        if (tile.getStringOrientation().charAt(i) == '0') {
+            tile.makeAlignmentTrue(i);
+        } else if (tile.getStringOrientation().charAt(i) == '1') {
+            tile.makeAlignmentFalse(i);
+        }
+    }
 
     private void checkSurroundingTiles(int i, String prongPosition, int[] tilePositions, Tile currentTile, int adjacentTileProngPosition) {
         Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
@@ -197,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
         float hue = rand.nextFloat() * 360;
-        float saturation = .1f;
+        float saturation = .05f;
         float value = 1f;
         backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
         tileColor = Color.BLACK;

@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Path tracker object will be used to monitor connected tile objects in game
  */
-public class PathTracker {
+public class PathLogger {
 
     /**
      * This is the path map. It will be the place where I keep track of all of the
@@ -19,7 +19,7 @@ public class PathTracker {
      */
     private HashMap<String, Set<String>> pathMap = new HashMap<>();
 
-    PathTracker() {
+    PathLogger() {
     }
 
     public HashMap<String, Set<String>> getPathMap() {
