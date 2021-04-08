@@ -1,6 +1,9 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -27,8 +30,6 @@ public class GameLayout {
     int num = 0;
 
     public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {
-        colorList = new ColorList(columns, rows);
-        colorList.createColorList();
         this.tileAlignmentListener = tileAlignmentListener;
         this.tileColor = tileColor;
         this.rows = rows;
@@ -71,19 +72,13 @@ public class GameLayout {
     }
 
     private int getTileOptions(int i, Tile top, Tile lefty) {
-        boolean isEmptyTop = true;
-        boolean isEmptyLeft = true;
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
-        if (!topEdge) {
-            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-        }
-        if (!leftEdge) {
-            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        }
-        if (isEmptyTop && isEmptyLeft) {
+        boolean isFilledTop = topEdge || tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
+        boolean isFilledLeft = leftEdge || tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
+        if (isFilledTop && isFilledLeft) {
             if (bottomEdge && rightEdge) {
                 return 0;
             }
@@ -94,7 +89,7 @@ public class GameLayout {
                 return rand.nextInt(2);
             }
             return rand.nextInt(3);
-        } else if (!isEmptyTop && isEmptyLeft) {
+        } else if (!isFilledTop && isFilledLeft) {
 
             if (bottomEdge && rightEdge) {
                 return 1;
@@ -106,7 +101,7 @@ public class GameLayout {
                 return rand.nextInt(2) + 1;
             }
             return rand.nextInt(4) + 1;
-        } else if (isEmptyTop) {
+        } else if (isFilledTop) {
             if (bottomEdge && rightEdge) {
                 return 1;
             }
@@ -136,17 +131,11 @@ public class GameLayout {
         boolean bottomEdge = i >= ((rows * columns) - columns);
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
-        boolean isEmptyTop = true;
-        boolean isEmptyLeft = true;
-        if (!topEdge) {
-            isEmptyTop = tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-        }
-        if (!leftEdge) {
-            isEmptyLeft = tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        }
+        boolean isEmptyTop = topEdge || tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
+        boolean isEmptyLeft = leftEdge || tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
         if (!isEmptyLeft && !isEmptyTop) {
             if (rightEdge) {
-                return 0;
+                return rand.nextInt(1);
             }
             return (prongsM1 - 1) % 4;
         } else if (isEmptyLeft && !isEmptyTop) {
@@ -173,7 +162,6 @@ public class GameLayout {
             maxOption = prongsM1 + 1;
         }
         return (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
-
     }
 
     public void resetGame(int rows, int columns, int tileColor) {
@@ -182,7 +170,6 @@ public class GameLayout {
         this.tileColor = tileColor;
         gameTiles.clear();
         correctlyOriented.clear();
-        colorList.createNewColorList(rows, columns);
         createGameTiles();
     }
 
