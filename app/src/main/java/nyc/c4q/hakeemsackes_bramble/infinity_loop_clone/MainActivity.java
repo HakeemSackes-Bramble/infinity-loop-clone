@@ -148,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mP3november.setLooping(true);
-        mP3november.start();
+//        mP3november.setLooping(true);
+//        mP3november.start();
     }
 
     @Override
@@ -172,13 +172,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void soundToggle(){
+        mP3november.start();
+    }
+
     private void setValues() {
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
         float hue = rand.nextFloat() * 360;
         float saturation = .05f;
         float value = 1f;
-        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-        tileColor = Color.BLACK;
+        rustTheme(hue, saturation, value);
     }
+
+    void rustTheme(float hue, float saturation, float value){
+        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});;
+        tileColor =  Color.HSVToColor(new float[]{hue, saturation, 0.5f});
+    }
+    void neoDarkTheme(float hue, float saturation, float value){
+        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, 0.2f});
+        tileColor =  Color.HSVToColor(new float[]{hue, saturation + .6f, value});
+    }
+
+    void neoLightTheme(float hue, float saturation, float value) {
+        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
+        tileColor =  Color.HSVToColor(new float[]{hue, saturation + .6f, value});
+    }
+
 }

@@ -55,7 +55,7 @@ public class GameLayout {
             tile.setTilePositions(checkPosition(i));
             int correctOrientation = getOrientationOption(tileType, i, top, lefty);
             tile.setCorrectOrientation(correctOrientation);
-            tile.setOrientation(rand.nextInt(4));
+            tile.setOrientation(correctOrientation);
             if (i % columns == (columns - 1)) {
                 num++;
             }
