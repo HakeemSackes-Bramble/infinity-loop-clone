@@ -20,17 +20,20 @@ public class TileView extends View {
     private float scale;
     private Tile tileId;
     private Paint paint;
-    private int sizeDP = 36;
+    private int sizeDP;
     private float sizePX;
     private int color;
     private TileDrawings tileDrawings;
 
 
-    public TileView(Context context, int color) {
+    public TileView(Context context, int color, int column) {
         super(context);
         this.color = color;
+        this.sizeDP = column;
         scale = context.getResources().getDisplayMetrics().density;
         sizePX = scale * sizeDP;
+
+
     }
 
     public TileView(Context context, @Nullable AttributeSet attrs) {
@@ -63,7 +66,7 @@ public class TileView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(sizePX / 10);
         paint.setAntiAlias(true);
-        tileDrawings = new TileDrawings(paint,this);
+        tileDrawings = new TileDrawings(paint, this);
     }
 
     public void rotateView(int oldPos, int newPos) {

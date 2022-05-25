@@ -1,13 +1,9 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 
 /**
@@ -26,7 +22,6 @@ public class GameLayout {
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
-    private ColorList colorList;
     int num = 0;
 
     public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {

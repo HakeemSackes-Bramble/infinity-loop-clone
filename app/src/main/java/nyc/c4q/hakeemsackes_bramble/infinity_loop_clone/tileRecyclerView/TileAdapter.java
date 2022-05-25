@@ -12,14 +12,16 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLay
 
 public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
     GameLayout gameLayout;
-
-    public TileAdapter(GameLayout gameLayout) {
+    int tileSize;
+    public TileAdapter(GameLayout gameLayout, int tileSize) {
         this.gameLayout = gameLayout;
+        this.tileSize = tileSize;
     }
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       return new TileViewHolder(new TileView(parent.getContext(), gameLayout.getTileColor()), gameLayout);
+
+       return new TileViewHolder(new TileView(parent.getContext(), gameLayout.getTileColor(), tileSize), gameLayout);
     }
 
     @Override

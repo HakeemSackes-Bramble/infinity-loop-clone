@@ -22,7 +22,7 @@ my version of a game currently on the google play store called infinity loop
 * <h3>the objective:: <b>more colors</b></h3>
   <i>you said that genius lol</i>
   
-  ** first! create objects/methods that detects various closed loopes in game whenever a loop is created by player
+  ** first! create objects/methods that detects various closed loops in game whenever a loop is created by player
   
   ** second! properly fill those closed loops while respecting those black borders(and not melting the cpu in the process. <i>Keep it linear Hakeem lol!!!</i>).
   

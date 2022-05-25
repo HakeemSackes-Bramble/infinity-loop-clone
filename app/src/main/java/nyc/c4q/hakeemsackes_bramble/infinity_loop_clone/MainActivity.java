@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mP3november;
     private int rows;
     private int columns;
+    private int tileSize;
     private int backgroundColor;
     private int tileColor;
     private static final String TAG = MainActivity.class.getName();
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             linearLayout.setBackgroundColor(backgroundColor);
             gameLayout.resetGame(rows, columns, tileColor);
             gridLayoutManager.setSpanCount(columns);
-            recyclerView.setAdapter(new TileAdapter(gameLayout));
+            recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
             button.setOnTouchListener(null);
             button.setBackgroundColor(Color.alpha(0));
             button.setText("");
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(new TileAdapter(gameLayout));
+        recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
     }
 
     @Override
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private void setValues() {
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
+        tileSize = 700/rows > 360/columns? 360/columns: 660/rows;
         float hue = rand.nextFloat() * 360;
         float saturation = .05f;
         float value = 1f;

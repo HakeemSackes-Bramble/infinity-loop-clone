@@ -4,6 +4,8 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.loopDetectionSystem;
 import java.util.HashMap;
 import java.util.Set;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
+
 /**
  * Path tracker object will be used to monitor connected tile objects in game
  */
@@ -17,16 +19,16 @@ public class PathLogger {
      * TODO: change to uuid
      * , set of strings representing each section of path
      */
-    private HashMap<String, Set<String>> pathMap = new HashMap<>();
+    private HashMap<String, Set<Tile>> pathMap = new HashMap<>();
 
     PathLogger() {
     }
 
-    public HashMap<String, Set<String>> getPathMap() {
+    public HashMap<String, Set<Tile>> getPathMap() {
         return pathMap;
     }
 
-    public void setPathMap(HashMap<String, Set<String>> pathMap) {
+    public void setPathMap(HashMap<String, Set<Tile>> pathMap) {
         this.pathMap = pathMap;
     }
 
@@ -37,23 +39,29 @@ public class PathLogger {
      * @param uuid
      * @param pathSection
      */
-    public void setNewPathSection(Set<String> uuid, String pathSection) {
-        Set<String> path = pathMap.get(uuid);
+    public void setNewPathSection(String uuid, Tile pathSection) {
+        Set<Tile> path = pathMap.get(uuid);
         path.add(pathSection);
+        pathMap.put(uuid, path);
     }
 
     /**
-     * used for when line(s) are diverged. (fork in the road or a ). this will create new paths and thus
-     * create new sections.
+     * used for when line(s) are diverged. (fork in the road or multiple prongs). this will create new paths and thus create new sections.
      *
      * @param uuid
      * @param pathSection
      */
-    public void pathForker(Set<String> uuid, String pathSection) {
+    public void pathForker(String uuid, Tile pathSection ) {
+        Set<Tile> path = pathMap.get(uuid);
+        for (int i = 0; i <5 ; i++) {
+
+        }
+
     }
 
     /**
      * Used to add new path section to map of paths
+     *
      * @param pathSection
      */
     public void addPath(String pathSection) {
@@ -65,6 +73,4 @@ public class PathLogger {
     public void removePath(String uuid) {
         pathMap.remove(uuid);
     }
-
-
 }

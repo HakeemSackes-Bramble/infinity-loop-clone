@@ -14,7 +14,6 @@ public class TileTypes {
      */
     private HashMap<Integer, String[]> tiles = new HashMap<>();
 
-
     public TileTypes() {
         addSquareTilePossibilities();
     }
@@ -31,4 +30,9 @@ public class TileTypes {
     public HashMap<Integer, String[]> getTiles() {
         return tiles;
     }
+
+    private void addSquarePathsForTiles(){
+
+    }
 }
+
