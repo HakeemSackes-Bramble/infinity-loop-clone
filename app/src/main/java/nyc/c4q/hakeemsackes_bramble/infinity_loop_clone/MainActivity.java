@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private int backgroundColor;
     private int tileColor;
     private static final String TAG = MainActivity.class.getName();
+    private static final int maxGameWidth = 360;
+    private static final int maxGameHeight = 660;
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
     private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
@@ -83,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 gameLayout.removeWrongTile(position);
             }
+        }
+
+        @Override
+        public void checkPathAlignment() {
+
         }
 
         @Override
@@ -180,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     private void setValues() {
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
-        tileSize = 700/rows > 360/columns? 360/columns: 660/rows;
+        tileSize = maxGameHeight/rows > maxGameWidth/columns? maxGameWidth/columns: maxGameHeight/rows;
         float hue = rand.nextFloat() * 360;
         float saturation = .05f;
         float value = 1f;

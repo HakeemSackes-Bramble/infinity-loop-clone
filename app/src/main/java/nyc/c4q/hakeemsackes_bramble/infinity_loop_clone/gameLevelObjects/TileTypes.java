@@ -13,9 +13,11 @@ public class TileTypes {
      * TODO: create method that adds square tile orientations to HashMap programmatically
      */
     private HashMap<Integer, String[]> tiles = new HashMap<>();
+    private HashMap<Integer, String[]> tilePaths = new HashMap<>();
 
     public TileTypes() {
         addSquareTilePossibilities();
+        addSquarePathsForTiles();
     }
 
     private void addSquareTilePossibilities() {
@@ -32,7 +34,12 @@ public class TileTypes {
     }
 
     private void addSquarePathsForTiles(){
-
+        tilePaths.put(0, new String[]{"0"});
+        tilePaths.put(1, new String[]{"0"});
+        tilePaths.put(2, new String[]{"1", "03"});
+        tilePaths.put(3, new String[]{"1", "02"});
+        tilePaths.put(4, new String[]{"3", "03", "02", "23"});
+        tilePaths.put(5, new String[]{"2", "03", "12"});
     }
 }
 

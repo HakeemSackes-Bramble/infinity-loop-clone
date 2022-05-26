@@ -39,7 +39,7 @@ public class PathLogger {
      * @param uuid
      * @param pathSection
      */
-    public void setNewPathSection(String uuid, Tile pathSection) {
+    public void NewPathSection(String uuid, Tile pathSection) {
         Set<Tile> path = pathMap.get(uuid);
         path.add(pathSection);
         pathMap.put(uuid, path);
@@ -53,7 +53,7 @@ public class PathLogger {
      */
     public void pathForker(String uuid, Tile pathSection ) {
         Set<Tile> path = pathMap.get(uuid);
-        for (int i = 0; i <5 ; i++) {
+        for (int i = 0; i <  3; i++) {
 
         }
 
@@ -64,7 +64,8 @@ public class PathLogger {
      *
      * @param pathSection
      */
-    public void addPath(String pathSection) {
+    public void addPath(Tile pathSection ) {
+
     }
 
     /**

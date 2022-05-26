@@ -12,6 +12,7 @@ public class Tile {
     private int correctOrientation;
     private boolean[] alignment = new boolean[4];
     private String[] prongOrientations;
+    private String uuid;
     private HashSet<TilePositions> tilePositions;
 
     public String getStringOrientation() {
