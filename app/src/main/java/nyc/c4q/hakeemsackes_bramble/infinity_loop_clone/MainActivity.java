@@ -18,6 +18,7 @@ import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
 
@@ -65,16 +66,10 @@ public class MainActivity extends AppCompatActivity {
                     position + columns,
                     position - 1
             };
-            for (int i = 0; i < prongPos.length(); i++) {
+            for (int i = 0; i < 4; i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles
-                if (surroundingTilePositions[i] < 0 && i == 0) {
-                    checkForEdgeFacingProngs(tile, i);
-                } else if ((surroundingTilePositions[i] >= (rows * columns) || surroundingTilePositions[i] % columns == 0) && i == 1) {
-                    checkForEdgeFacingProngs(tile, i);
-                } else if (surroundingTilePositions[i] >= (rows * columns) && i == 2) {
-                    checkForEdgeFacingProngs(tile, i);
-                } else if ((surroundingTilePositions[i] < 0 || surroundingTilePositions[i] % columns == columns - 1) && i == 3) {
+                if (!tile.getTilePositions().contains(TilePositions.CENTER) && tile.getTilePositions().contains(TilePositions.getTilePositionsFromValue(i))) {
                     checkForEdgeFacingProngs(tile, i);
                 } else {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);

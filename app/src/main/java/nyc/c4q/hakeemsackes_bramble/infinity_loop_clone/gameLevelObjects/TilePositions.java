@@ -1,5 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
+import java.util.HashMap;
+
 /**
  * Created by hakeemsackes-bramble on 1/15/18.
  * <p>
@@ -18,13 +20,36 @@ public enum TilePositions {
     LEFT_EDGE(3),
     CENTER(4),
     NULL_POS(-1);
+
+    private static HashMap<Integer, TilePositions> tilePositionsFromValue = new HashMap<>();
+
+    static {
+        for (TilePositions pos: TilePositions.values()){
+            tilePositionsFromValue.put(pos.value, pos);
+        }
+    }
+
     private int value;
+
 
     TilePositions(int i) {
         this.value = i;
     }
 
+    public static TilePositions getTilePositionsFromValue(int i) {
+        return tilePositionsFromValue.get(i);
+    }
+
+    public void setTilePositionsFromValue(HashMap<Integer, TilePositions> tilePositionsFromValue) {
+        this.tilePositionsFromValue = tilePositionsFromValue;
+    }
+
     public int getValue() {
         return value;
     }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
 }

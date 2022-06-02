@@ -29,10 +29,6 @@ public class TileTypes {
         tiles.put(5, new String[]{"4", "1111", "1111", "1111", "1111"});
     }
 
-    public HashMap<Integer, String[]> getTiles() {
-        return tiles;
-    }
-
     private void addSquarePathsForTiles(){
         tilePaths.put(0, new String[]{"0"});
         tilePaths.put(1, new String[]{"0"});
@@ -40,6 +36,22 @@ public class TileTypes {
         tilePaths.put(3, new String[]{"1", "02"});
         tilePaths.put(4, new String[]{"3", "03", "02", "23"});
         tilePaths.put(5, new String[]{"2", "03", "12"});
+    }
+
+    public HashMap<Integer, String[]> getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(HashMap<Integer, String[]> tiles) {
+        this.tiles = tiles;
+    }
+
+    public HashMap<Integer, String[]> getTilePaths() {
+        return tilePaths;
+    }
+
+    public void setTilePaths(HashMap<Integer, String[]> tilePaths) {
+        this.tilePaths = tilePaths;
     }
 }
 

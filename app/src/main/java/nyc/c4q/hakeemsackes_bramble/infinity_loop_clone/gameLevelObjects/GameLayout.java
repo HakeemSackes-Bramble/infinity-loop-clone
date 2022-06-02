@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 
 /**
@@ -77,6 +79,7 @@ public class GameLayout {
      * @return
      */
     private int getTileOptions(int i, Tile top, Tile lefty) {
+        Set<Integer> tileOptions = tilePossibilities.keySet();
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
         boolean rightEdge = i % columns == columns - 1;
