@@ -66,6 +66,13 @@ public class GameLayout {
         return gameTiles;
     }
 
+    /**
+     * TODO: reduce cognative complexity. this is just crazy, but it works!! lol :D :D
+     * @param i
+     * @param top
+     * @param lefty
+     * @return
+     */
     private int getTileOptions(int i, Tile top, Tile lefty) {
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
@@ -118,6 +125,15 @@ public class GameLayout {
         }
     }
 
+    /**
+     * TODO: reduce cognative complexity. this is just crazy, but it works!! lol :D :D
+     *
+     * @param tileType
+     * @param i
+     * @param top
+     * @param lefty
+     * @return
+     */
     private int getOrientationOption(int tileType, int i, Tile top, Tile lefty) {
         int prongsM1 = Integer.valueOf(tilePossibilities.get(tileType)[0]) - 1;
         int maxOption;

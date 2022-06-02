@@ -14,34 +14,43 @@ public class PathLogger {
     /**
      * This is the path map. It will be the place where I keep track of all of the
      * connected lines in game.
-     * <p>
+     *
      * HashMap<uuid(currently string for easy testing)
+     *
      * TODO: change to uuid
-     * , set of strings representing each section of path
+     * Set of strings representing each section of path.
      */
-    private HashMap<String, Set<Tile>> pathMap = new HashMap<>();
+    private HashMap<String, Set<String>> pathMap = new HashMap<>();
 
-    PathLogger() {
-    }
+    /**
+     * thishash map will be used to logg every section of the paths with the uuid of the path that is created
+     * HashMap<pathId, uuid>
+     *
+     */
+    private HashMap<String, String> pathUuid = new HashMap<>();
 
-    public HashMap<String, Set<Tile>> getPathMap() {
+    public HashMap<String, Set<String>> getPathMap() {
         return pathMap;
     }
 
-    public void setPathMap(HashMap<String, Set<Tile>> pathMap) {
+    /**
+     * When creating a new game, add all of the pathSections to the hashMap of paths and their respetive uuids.
+     * @param pathMap
+     */
+    public void setPathMap(HashMap<String, Set<String>> pathMap) {
         this.pathMap = pathMap;
     }
 
     /**
-     * Method will add a new path segment to existing paths.
+     * Method will add a new path segment to existing path sets.
      * Path section will be the tile type and the orientation of the current tile.
      *
      * @param uuid
-     * @param pathSection
+     * @param newPathSection
      */
-    public void NewPathSection(String uuid, Tile pathSection) {
-        Set<Tile> path = pathMap.get(uuid);
-        path.add(pathSection);
+    public void NewPathSection(String uuid, String newPathSection) {
+        Set<String> path = pathMap.get(uuid);
+        path.add(newPathSection);
         pathMap.put(uuid, path);
     }
 
@@ -51,8 +60,8 @@ public class PathLogger {
      * @param uuid
      * @param pathSection
      */
-    public void pathForker(String uuid, Tile pathSection ) {
-        Set<Tile> path = pathMap.get(uuid);
+    public void pathForker(String uuid, String pathSection) {
+        Set<String> path = pathMap.get(uuid);
         for (int i = 0; i <  3; i++) {
 
         }
@@ -64,7 +73,7 @@ public class PathLogger {
      *
      * @param pathSection
      */
-    public void addPath(Tile pathSection ) {
+    public void addPath(String pathSection) {
 
     }
 
@@ -74,4 +83,13 @@ public class PathLogger {
     public void removePath(String uuid) {
         pathMap.remove(uuid);
     }
+
+    /**
+     * first, identify if edge of tile section is connected to other tile.
+     * add newly added tile section to list of unique path sets.
+     * check if other edge connects.
+     * if other edge connects to new section combine paths and add uid to all
+     *
+     */
+
 }
