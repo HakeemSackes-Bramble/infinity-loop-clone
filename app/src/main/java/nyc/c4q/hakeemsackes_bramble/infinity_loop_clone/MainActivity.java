@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private int tileColor;
     private static final String TAG = MainActivity.class.getName();
     private static final int maxGameWidth = 360;
-    private static final int maxGameHeight = 660;
+    private static final int maxGameHeight = 540;
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
     private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
@@ -156,13 +156,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        mP3november.setLooping(true);
-//        mP3november.start();
     }
 
     @Override
     protected void onStop() {
-        mP3november.pause();
         super.onStop();
     }
 

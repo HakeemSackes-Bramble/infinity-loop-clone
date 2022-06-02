@@ -48,7 +48,7 @@ public class GameLayout {
              */
             Tile tile = new Tile(rand.nextInt(4), tileType, getOrientationOption(tileType, i, top, lefty), tilePossibilities.get(tileType));
             tile.setTilePositions(checkPosition(i));
-            int correctOrientation = getOrientationOption(tileType, i, top, lefty);
+            int correctOrientation = tile.getCorrectOrientation();
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(correctOrientation);
             if (i % columns == (columns - 1)) {
@@ -67,7 +67,10 @@ public class GameLayout {
     }
 
     /**
-     * TODO: reduce cognative complexity. this is just crazy, but it works!! lol :D :D
+     * this method returns a valid tile given its position and relation to other existing tiles.
+     *
+     * TODO: reduce methods cognitive complexity. this is just crazy, but it works!! lol :D :D
+     *
      * @param i
      * @param top
      * @param lefty
@@ -85,7 +88,7 @@ public class GameLayout {
                 return 0;
             }
             if (rightEdge) {
-                return 1;
+                return rand.nextInt(2);
             }
             if (bottomEdge) {
                 return rand.nextInt(2);
@@ -126,7 +129,9 @@ public class GameLayout {
     }
 
     /**
-     * TODO: reduce cognative complexity. this is just crazy, but it works!! lol :D :D
+     * this method returns a valid tile given its position and relation to other existing tiles.
+     *
+     * TODO: reduce methods cogntive complexity. this like above is just crazy, but it works!! lol :D :D
      *
      * @param tileType
      * @param i

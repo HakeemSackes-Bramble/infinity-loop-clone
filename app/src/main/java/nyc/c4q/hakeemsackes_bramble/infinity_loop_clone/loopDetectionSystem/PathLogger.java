@@ -88,7 +88,7 @@ public class PathLogger {
      * first, identify if edge of tile section is connected to other tile.
      * add newly added tile section to list of unique path sets.
      * check if other edge connects.
-     * if other edge connects to new section combine paths and add uid to all
+     * if other edge connects to new section then combine paths and add new uuid.
      *
      */
 
