@@ -78,10 +78,6 @@ public class Tile {
         alignment[pos] = checkConnection;
     }
 
-    public void makeAlignmentFalse(int pos) {
-        alignment[pos] = false;
-    }
-
     public boolean isProperlyAligned() {
         return alignment[0] && alignment[1] && alignment[2] && alignment[3];
     }

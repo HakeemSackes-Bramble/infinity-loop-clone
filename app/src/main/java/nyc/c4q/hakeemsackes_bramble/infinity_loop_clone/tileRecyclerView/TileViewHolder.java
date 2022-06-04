@@ -25,13 +25,8 @@ class TileViewHolder extends RecyclerView.ViewHolder {
 
         final Tile tile = mGameLayout.getGameTiles().get(position);
         ((TileView) itemView).setTileValues(tile);
-        if (tile.getTileType() == 3) {
-            tile.setCorrectOrientation((tile.getCorrectOrientation() % 2));
-            tile.setOrientation((tile.getOrientation() % 2));
-        }
-        if (tile.getTileType() == 0) {
-            mGameLayout.addCorrectedTile(position);
-        }
+        mGameLayout.runCheckTileAlignmentListener(tile, position);
+        mGameLayout.addCorrectedTile(position, tile.isProperlyAligned());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,10 +36,8 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                  */
                 if (mGameLayout.getGameTiles().size() != mGameLayout.getCorrectlyOrientedTileSize()) {
                     ((TileView) itemView).rotateView(tile.getOrientation(), (tile.getOrientation() + 1) % 4);
+                    tile.setOrientation((tile.getOrientation() + 1) % 4);
                     mGameLayout.runCheckTileAlignmentListener(tile, position);
-                    if (mGameLayout.getGameTiles().size() <= mGameLayout.getCorrectlyOrientedTileSize()) {
-                        mGameLayout.runAllTilesAlignedListener();
-                    }
                 } else {
                     mGameLayout.runAllTilesAlignedListener();
                 }

@@ -52,9 +52,6 @@ public class GameLayout {
             }
             gameTiles.add(tile);
         }
-        for (int i = 0; i < gameTiles.size(); i++) {
-            tileAlignmentListener.checkTileAlignment(this, gameTiles.get(i), i, gameTiles.get(i).getOrientation(), gameTiles.get(i).getOrientation());
-        }
         num = 0;
     }
 
@@ -91,12 +88,7 @@ public class GameLayout {
      */
     private String positionType(int i, Set<TilePositions> positions) {
         char[] type = new char[4];
-        int[] surroundingTilePositions = new int[]{
-                i - columns,
-                i + 1,
-                i + columns,
-                i - 1
-        };
+        int[] surroundingTilePositions = getSurroundingTileNumbers(i);
         for (int j = 3; j < 7; j++) {
             int k = j % 4;
             if (positions.contains(TilePositions.getTilePositionsFromValue(k))) {
@@ -156,14 +148,21 @@ public class GameLayout {
         return positions;
     }
 
-    public void addCorrectedTile(int position) {
-        correctlyOriented.add(position);
+    public void addCorrectedTile(int position, boolean isCorrected) {
+        if (isCorrected) {
+            correctlyOriented.add(position);
+        } else {
+            correctlyOriented.remove(position);
+        }
     }
-
-    public void removeWrongTile(int position) {
-        correctlyOriented.remove(position);
+    public int[] getSurroundingTileNumbers(int position) {
+        return new int[]{
+                position - columns,
+                position + 1,
+                position + columns,
+                position - 1
+        };
     }
-
     public int getCorrectlyOrientedTileSize() {
         return correctlyOriented.size();
     }
@@ -181,6 +180,6 @@ public class GameLayout {
     }
 
     public void runCheckTileAlignmentListener(Tile tile, int position) {
-        listener.checkTileAlignment(this, tile, position, tile.getOrientation(), (tile.getOrientation() + 1) % 4);
+        listener.checkTileAlignment(this, tile, position);
     }
 }

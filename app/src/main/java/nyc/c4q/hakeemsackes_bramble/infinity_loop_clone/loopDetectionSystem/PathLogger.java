@@ -66,9 +66,7 @@ public class PathLogger {
     public void pathForker(String uuid, String pathSection) {
         Set<String> path = pathMap.get(uuid);
         for (int i = 0; i <  3; i++) {
-
         }
-
     }
 
     /**

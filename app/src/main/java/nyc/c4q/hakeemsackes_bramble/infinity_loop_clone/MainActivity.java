@@ -56,35 +56,24 @@ public class MainActivity extends AppCompatActivity {
     private TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
 
         @Override
-        public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position, int oldPos, int newPos) {
+        public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position) {
 
-            tile.setOrientation(newPos);
             String prongPos = tile.getStringOrientation();
-            int[] surroundingTilePositions = new int[]{
-                    position - columns,
-                    position + 1,
-                    position + columns,
-                    position - 1
-            };
+            int[] surroundingTilePositions = gameLayout.getSurroundingTileNumbers(position);
             for (int i = 0; i < 4; i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles
-                if (!tile.getTilePositions().contains(TilePositions.CENTER) && tile.getTilePositions().contains(TilePositions.getTilePositionsFromValue(i))) {
+                if (tile.getTilePositions().contains(TilePositions.getTilePositionsFromValue(i))) {
                     checkForEdgeFacingProngs(tile, i);
                 } else {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
-            if (tile.isProperlyAligned()) {
-                gameLayout.addCorrectedTile(position);
-            } else {
-                gameLayout.removeWrongTile(position);
-            }
+            gameLayout.addCorrectedTile(position, tile.isProperlyAligned());
         }
 
         @Override
         public void checkPathAlignment() {
-
         }
 
         @Override
@@ -96,19 +85,15 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void checkForEdgeFacingProngs(Tile tile, int i) {
-            tile.isProngConnected(i,tile.getStringOrientation().charAt(i) == '0');
+        tile.isProngConnected(i, tile.getStringOrientation().charAt(i) == '0');
     }
 
     private void checkSurroundingTiles(int i, String prongPosition, int[] tilePositions, Tile currentTile, int adjacentTileProngPosition) {
         Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
-        boolean connectionChecker =  prongPosition.charAt(i) == surroundingTile.getStringOrientation().charAt(adjacentTileProngPosition);
+        boolean connectionChecker = prongPosition.charAt(i) == surroundingTile.getStringOrientation().charAt(adjacentTileProngPosition);
         currentTile.isProngConnected(i, connectionChecker);
         surroundingTile.isProngConnected(adjacentTileProngPosition, connectionChecker);
-        if (surroundingTile.isProperlyAligned()) {
-            gameLayout.addCorrectedTile(tilePositions[i]);
-        } else {
-            gameLayout.removeWrongTile(tilePositions[i]);
-        }
+        gameLayout.addCorrectedTile(tilePositions[i], surroundingTile.isProperlyAligned());
     }
 
     @Override
