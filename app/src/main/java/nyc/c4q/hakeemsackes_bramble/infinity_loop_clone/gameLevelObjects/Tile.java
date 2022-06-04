@@ -74,8 +74,8 @@ public class Tile {
         this.tilePositions = tilePositions;
     }
 
-    public void makeAlignmentTrue(int pos) {
-        alignment[pos] = true;
+    public void isProngConnected(int pos, boolean checkConnection) {
+        alignment[pos] = checkConnection;
     }
 
     public void makeAlignmentFalse(int pos) {
@@ -83,6 +83,6 @@ public class Tile {
     }
 
     public boolean isProperlyAligned() {
-      return alignment[0] && alignment[1] && alignment[2] && alignment[3];
+        return alignment[0] && alignment[1] && alignment[2] && alignment[3];
     }
 }

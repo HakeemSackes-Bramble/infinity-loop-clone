@@ -103,7 +103,7 @@ public class GameLayout {
                 type[k] = '0';
             } else if (j < 5) {
                 Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
-                type[k] = adjacentTile.getProngOrientations()[adjacentTile.getOrientation() + 1].charAt((k + 2) % 4);
+                type[k] = adjacentTile.getProngOrientations()[adjacentTile.getCorrectOrientation() + 1].charAt((k + 2) % 4);
             } else {
                 type[k] = (char) (rand.nextInt(2) + 48);
             }

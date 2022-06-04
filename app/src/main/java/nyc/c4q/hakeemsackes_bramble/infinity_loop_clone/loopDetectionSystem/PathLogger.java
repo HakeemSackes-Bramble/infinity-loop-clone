@@ -29,6 +29,9 @@ public class PathLogger {
      */
     private HashMap<String, String> pathUuid = new HashMap<>();
 
+    public PathLogger() {
+    }
+
     public HashMap<String, Set<String>> getPathMap() {
         return pathMap;
     }
@@ -78,7 +81,7 @@ public class PathLogger {
     }
 
     /**
-     * used to remove path from the map after two paths are merged
+     * used to remove extra path from the map after two paths are merged
      */
     public void removePath(String uuid) {
         pathMap.remove(uuid);
