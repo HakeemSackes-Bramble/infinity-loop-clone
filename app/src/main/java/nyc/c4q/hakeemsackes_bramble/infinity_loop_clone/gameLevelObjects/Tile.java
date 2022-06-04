@@ -14,11 +14,6 @@ public class Tile {
     private String[] prongOrientations;
     private String uuid;
     private HashSet<TilePositions> tilePositions;
-
-    public String getStringOrientation() {
-        return stringOrientation;
-    }
-
     private String stringOrientation;
 
     Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
@@ -29,6 +24,26 @@ public class Tile {
         this.correctOrientation = correctOrientation;
     }
 
+    public String getStringOrientation() {
+        return stringOrientation;
+    }
+
+    public String[] getProngOrientations() {
+        return prongOrientations;
+    }
+
+    public void setProngOrientations(String[] prongOrientations) {
+        this.prongOrientations = prongOrientations;
+        this.stringOrientation = prongOrientations[orientation + 1];
+    }
+
+    public void setStringOrientation(String stringOrientation) {
+        this.stringOrientation = stringOrientation;
+    }
+
+    public void setTileType(int tileType) {
+        this.tileType = tileType;
+    }
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;

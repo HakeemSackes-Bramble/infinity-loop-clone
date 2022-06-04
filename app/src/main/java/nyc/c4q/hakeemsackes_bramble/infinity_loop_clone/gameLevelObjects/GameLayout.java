@@ -1,5 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,21 +38,13 @@ public class GameLayout {
 
     public void createGameTiles() {
         for (int i = 0; i < rows * columns; i++) {
-            Tile top = null;
-            Tile lefty = null;
-            if (i >= columns) {
-                top = gameTiles.get(i - columns);
-            }
-            if (i > 0) {
-                lefty = gameTiles.get(i - 1);
-            }
-            int tileType = getTileOptions(i, top, lefty);
-            /**
-             * new Tile(orientation, tileType, correctOrientation, prongOrientations)
-             */
-            Tile tile = new Tile(rand.nextInt(4), tileType, getOrientationOption(tileType, i, top, lefty), tilePossibilities.get(tileType));
-            tile.setTilePositions(checkPosition(i));
-            int correctOrientation = tile.getCorrectOrientation();
+            Set<TilePositions> positions = checkPosition(i);
+            int correctOrientation;
+            String typeOfPosition = positionType(i, positions);
+            int tileType = getTileOptions(typeOfPosition);
+            correctOrientation = getOrientationOption(tileType, typeOfPosition);
+            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, tilePossibilities.get(tileType));
+            tile.setTilePositions((HashSet<TilePositions>) positions);
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(correctOrientation);
             if (i % columns == (columns - 1)) {
@@ -69,118 +63,68 @@ public class GameLayout {
     }
 
     /**
-     * this method returns a valid tile given its position and relation to other existing tiles.
+     * This method returns a valid tile given its position and relation to other existing tiles.
+     * <p>
      *
-     * TODO: reduce methods cognitive complexity. this is just crazy, but it works!! lol :D :D
-     *
-     * @param i
-     * @param top
-     * @param lefty
      * @return
      */
-    private int getTileOptions(int i, Tile top, Tile lefty) {
-        Set<Integer> tileOptions = tilePossibilities.keySet();
-        boolean topEdge = i < columns;
-        boolean bottomEdge = i >= ((rows * columns) - columns);
-        boolean rightEdge = i % columns == columns - 1;
-        boolean leftEdge = i % columns == 0;
-        boolean isFilledTop = topEdge || tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-        boolean isFilledLeft = leftEdge || tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        if (isFilledTop && isFilledLeft) {
-            if (bottomEdge && rightEdge) {
-                return 0;
-            }
-            if (rightEdge) {
-                return rand.nextInt(2);
-            }
-            if (bottomEdge) {
-                return rand.nextInt(2);
-            }
-            return rand.nextInt(3);
-        } else if (!isFilledTop && isFilledLeft) {
-
-            if (bottomEdge && rightEdge) {
-                return 1;
-            }
-            if (rightEdge) {
-                return rand.nextInt(2) * 2 + 1;
-            }
-            if (bottomEdge) {
-                return rand.nextInt(2) + 1;
-            }
-            return rand.nextInt(4) + 1;
-        } else if (isFilledTop) {
-            if (bottomEdge && rightEdge) {
-                return 1;
-            }
-            if (rightEdge) {
-                return rand.nextInt(2) + 1;
-            }
-            if (bottomEdge) {
-                return rand.nextInt(2) * 2 + 1;
-            }
-            return rand.nextInt(4) + 1;
+    private int getTileOptions(String positionType) {
+        int tileType;
+        String type = positionType;
+        String prongs = type.replace("0", "");
+        if (prongs.length() > 2) {
+            tileType = prongs.length() + 1;
+        } else if (type.contains("101")) {
+            tileType = 3;
         } else {
-            if (bottomEdge && rightEdge) {
-                return 2;
-            }
-            if (rightEdge || bottomEdge) {
-                return rand.nextInt(2) * 2 + 2;
-            }
-            return (rand.nextInt(3) + 2) % 4 + 2;
+            tileType = prongs.length();
         }
+        return tileType;
     }
 
     /**
-     * this method returns a valid tile given its position and relation to other existing tiles.
+     * Method returns a 4 character string that represents both the tile type and the orientation of the tile itself.
      *
-     * TODO: reduce methods cogntive complexity. this like above is just crazy, but it works!! lol :D :D
-     *
-     * @param tileType
      * @param i
-     * @param top
-     * @param lefty
+     * @param positions
      * @return
      */
-    private int getOrientationOption(int tileType, int i, Tile top, Tile lefty) {
-        int prongsM1 = Integer.valueOf(tilePossibilities.get(tileType)[0]) - 1;
-        int maxOption;
-        int shifter;
-        boolean topEdge = i < columns;
-        boolean bottomEdge = i >= ((rows * columns) - columns);
-        boolean rightEdge = i % columns == columns - 1;
-        boolean leftEdge = i % columns == 0;
-        boolean isEmptyTop = topEdge || tilePossibilities.get(top.getTileType())[top.getCorrectOrientation() + 1].charAt(2) == '0';
-        boolean isEmptyLeft = leftEdge || tilePossibilities.get(lefty.getTileType())[lefty.getCorrectOrientation() + 1].charAt(1) == '0';
-        if (!isEmptyLeft && !isEmptyTop) {
-            if (rightEdge) {
-                return rand.nextInt(1);
-            }
-            return (prongsM1 - 1) % 4;
-        } else if (isEmptyLeft && !isEmptyTop) {
-            if (rightEdge) {
-                return 0;
-            }
-            return prongsM1;
-        } else if (!isEmptyLeft) {
-            return 3;
-        } else {
-            maxOption = 2;
-            shifter = 1;
-            if (rightEdge) {
-                return 2;
-            }
-            if (bottomEdge) {
-                return prongsM1 + 1;
+    private String positionType(int i, Set<TilePositions> positions) {
+        char[] type = new char[4];
+        int[] surroundingTilePositions = new int[]{
+                i - columns,
+                i + 1,
+                i + columns,
+                i - 1
+        };
+        for (int j = 3; j < 7; j++) {
+            int k = j % 4;
+            if (positions.contains(TilePositions.getTilePositionsFromValue(k))) {
+                type[k] = '0';
+            } else if (j < 5) {
+                Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
+                type[k] = adjacentTile.getProngOrientations()[adjacentTile.getOrientation() + 1].charAt((k + 2) % 4);
+            } else {
+                type[k] = (char) (rand.nextInt(2) + 48);
             }
         }
-        if (prongsM1 < 0) {
-            return 1;
+        return String.valueOf(type);
+    }
+
+    /**
+     * This method returns a valid tile given its position and relation to other existing tiles.
+     * <p>
+     *
+     * @param tileType
+     * @return
+     */
+    private int getOrientationOption(int tileType, String type) {
+        for (int j = 1; j < 5; j++) {
+            if (tilePossibilities.get(tileType)[j].equals(type)) {
+                return j - 1;
+            }
         }
-        if (maxOption <= prongsM1) {
-            maxOption = prongsM1 + 1;
-        }
-        return (rand.nextInt(maxOption - prongsM1) + shifter + prongsM1) % 4;
+        return 0;
     }
 
     public void resetGame(int rows, int columns, int tileColor) {
