@@ -1,7 +1,5 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +25,7 @@ public class GameLayout {
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
     int num = 0;
+    private boolean allTilesAreAligned;
 
     public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {
         this.tileAlignmentListener = tileAlignmentListener;
@@ -38,15 +37,15 @@ public class GameLayout {
 
     public void createGameTiles() {
         for (int i = 0; i < rows * columns; i++) {
-            Set<TilePositions> positions = checkPosition(i);
+            Set<SquareTilePositions> positions = checkPosition(i);
             int correctOrientation;
             String typeOfPosition = positionType(i, positions);
             int tileType = getTileOptions(typeOfPosition);
             correctOrientation = getOrientationOption(tileType, typeOfPosition);
             Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, tilePossibilities.get(tileType));
-            tile.setTilePositions((HashSet<TilePositions>) positions);
+            tile.setTilePositions((HashSet<SquareTilePositions>) positions);
             tile.setCorrectOrientation(correctOrientation);
-            tile.setOrientation(correctOrientation);
+            tile.setOrientation(rand.nextInt(4));
             if (i % columns == (columns - 1)) {
                 num++;
             }
@@ -86,12 +85,12 @@ public class GameLayout {
      * @param positions
      * @return
      */
-    private String positionType(int i, Set<TilePositions> positions) {
+    private String positionType(int i, Set<SquareTilePositions> positions) {
         char[] type = new char[4];
         int[] surroundingTilePositions = getSurroundingTileNumbers(i);
         for (int j = 3; j < 7; j++) {
             int k = j % 4;
-            if (positions.contains(TilePositions.getTilePositionsFromValue(k))) {
+            if (positions.contains(SquareTilePositions.getTilePositionsFromValue(k))) {
                 type[k] = '0';
             } else if (j < 5) {
                 Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
@@ -128,29 +127,30 @@ public class GameLayout {
         createGameTiles();
     }
 
-    private HashSet<TilePositions> checkPosition(int i) {
-        HashSet<TilePositions> positions = new HashSet<>();
+    private HashSet<SquareTilePositions> checkPosition(int i) {
+        HashSet<SquareTilePositions> positions = new HashSet<>();
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
 
         if (topEdge)
-            positions.add(TilePositions.TOP_EDGE);
+            positions.add(SquareTilePositions.TOP_EDGE);
         if (bottomEdge)
-            positions.add(TilePositions.BOTTOM_EDGE);
+            positions.add(SquareTilePositions.BOTTOM_EDGE);
         if (rightEdge)
-            positions.add(TilePositions.RIGHT_EDGE);
+            positions.add(SquareTilePositions.RIGHT_EDGE);
         if (leftEdge)
-            positions.add(TilePositions.LEFT_EDGE);
+            positions.add(SquareTilePositions.LEFT_EDGE);
         if (positions.size() == 0)
-            positions.add(TilePositions.CENTER);
+            positions.add(SquareTilePositions.CENTER);
         return positions;
     }
 
     public void addCorrectedTile(int position, boolean isCorrected) {
         if (isCorrected) {
             correctlyOriented.add(position);
+            allTilesAreAligned = correctlyOriented.size() == gameTiles.size();
         } else {
             correctlyOriented.remove(position);
         }
@@ -176,10 +176,15 @@ public class GameLayout {
     }
 
     public void runAllTilesAlignedListener() {
-        listener.onAllTilesAligned();
+        listener.onAllTilesAligned(allTilesAreAligned);
     }
 
     public void runCheckTileAlignmentListener(Tile tile, int position) {
         listener.checkTileAlignment(this, tile, position);
+
+    }
+
+    public boolean hasAllTilesAligned() {
+        return allTilesAreAligned;
     }
 }

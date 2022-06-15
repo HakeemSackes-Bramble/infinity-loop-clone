@@ -1,7 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,9 +16,8 @@ import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TilePositions;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.loopDetectionSystem.PathLogger;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,18 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
-    private MediaPlayer mP3november;
     private int rows;
     private int columns;
     private int tileSize;
     private int backgroundColor;
     private int tileColor;
-    private PathLogger pathLogger;
     private static final String TAG = MainActivity.class.getName();
     private static final int maxGameWidth = 360;
     private static final int maxGameHeight = 540;
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
+    private SharedPreferences.Editor preferences;
     private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -63,13 +61,14 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 4; i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles
-                if (tile.getTilePositions().contains(TilePositions.getTilePositionsFromValue(i))) {
+                if (tile.getTilePositions().contains(SquareTilePositions.getTilePositionsFromValue(i))) {
                     checkForEdgeFacingProngs(tile, i);
                 } else {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
             gameLayout.addCorrectedTile(position, tile.isProperlyAligned());
+            onAllTilesAligned(gameLayout.hasAllTilesAligned());
         }
 
         @Override
@@ -77,10 +76,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onAllTilesAligned() {
-            button.setOnTouchListener(allTilesAligned);
-            button.setTextColor(tileColor);
-            button.setText("NEXT");
+        public void onAllTilesAligned(boolean alignedTiles) {
+            if (alignedTiles) {
+                button.setOnTouchListener(allTilesAligned);
+                button.setTextColor(tileColor);
+                button.setText("NEXT");
+            }
         }
     };
 
@@ -99,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = getSharedPreferences(getString(R.string.most_recent_game_list), MODE_PRIVATE).edit();
         setContentView(R.layout.activity_main);
-        mP3november = new MediaPlayer().create(this, R.raw.bensound_november);
         button = findViewById(R.id.activity_button);
         linearLayout = findViewById(R.id.activity_main_LinearLayout);
         recyclerView = findViewById(R.id.tile_grid_activity);
@@ -122,16 +123,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "onStart: triggered");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: triggered");
         super.onResume();
     }
 
     @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause: triggered");
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
+        Log.d(TAG, "onStop: triggered");
         super.onStop();
     }
 
@@ -149,14 +159,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void soundToggle() {
-        mP3november.start();
-    }
-
     private void setValues() {
+
         rows = rand.nextInt(9) + 5;
         columns = rand.nextInt(5) + 5;
-        tileSize = maxGameHeight / rows > maxGameWidth / columns ? maxGameWidth / columns : maxGameHeight / rows;
+        tileSize = maxGameHeight / rows > maxGameWidth / columns
+                ? maxGameWidth / columns
+                : maxGameHeight / rows;
         float hue = rand.nextFloat() * 360;
         float saturation = .05f;
         float value = 1f;

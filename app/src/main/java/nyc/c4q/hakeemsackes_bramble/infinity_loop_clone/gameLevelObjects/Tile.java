@@ -12,8 +12,7 @@ public class Tile {
     private int correctOrientation;
     private boolean[] alignment = new boolean[4];
     private String[] prongOrientations;
-    private String uuid;
-    private HashSet<TilePositions> tilePositions;
+    private HashSet<SquareTilePositions> tilePositions;
     private String stringOrientation;
 
     Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
@@ -66,11 +65,11 @@ public class Tile {
         this.correctOrientation = correctOrientation;
     }
 
-    public HashSet<TilePositions> getTilePositions() {
+    public HashSet<SquareTilePositions> getTilePositions() {
         return tilePositions;
     }
 
-    void setTilePositions(HashSet<TilePositions> tilePositions) {
+    void setTilePositions(HashSet<SquareTilePositions> tilePositions) {
         this.tilePositions = tilePositions;
     }
 

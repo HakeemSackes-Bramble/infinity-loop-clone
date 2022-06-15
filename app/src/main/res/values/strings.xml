@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">infinity-loop-clone</string>
+    <string name="most_recent_game_list">last-played-game</string>
 </resources>
