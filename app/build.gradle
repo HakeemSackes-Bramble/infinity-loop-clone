@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    namespace 'nyc.c4q.hakeemsackes_bramble.infinity_loop_clone'
 }
 
 dependencies {

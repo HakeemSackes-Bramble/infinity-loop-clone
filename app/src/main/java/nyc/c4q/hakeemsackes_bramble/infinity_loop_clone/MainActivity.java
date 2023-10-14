@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
             button.setOnTouchListener(null);
             button.setBackgroundColor(Color.alpha(0));
             button.setText("");
-            Log.d(TAG, "onClick: " + tileColor);
             return false;
         }
     };

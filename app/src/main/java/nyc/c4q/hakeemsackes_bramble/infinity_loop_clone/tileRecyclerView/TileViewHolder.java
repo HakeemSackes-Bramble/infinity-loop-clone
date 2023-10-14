@@ -39,7 +39,6 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                     tile.setOrientation((tile.getOrientation() + 1) % 4);
                     mGameLayout.runCheckTileAlignmentListener(tile, position);
                 }
-                Log.d(TAG, "onClick: " + " " + mGameLayout.getGameTiles().size() + " " + mGameLayout.getCorrectlyOrientedTileSize());
             }
         });
 
