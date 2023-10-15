@@ -3,6 +3,7 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -37,13 +38,13 @@ public class GameLayout {
 
     public void createGameTiles() {
         for (int i = 0; i < rows * columns; i++) {
-            Set<SquareTilePositions> positions = checkPosition(i);
+            HashSet<SquareTilePositions> positions = checkPosition(i);
             int correctOrientation;
             String typeOfPosition = positionType(i, positions);
             int tileType = getTileOptions(typeOfPosition);
             correctOrientation = getOrientationOption(tileType, typeOfPosition);
-            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, tilePossibilities.get(tileType));
-            tile.setTilePositions((HashSet<SquareTilePositions>) positions);
+            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
+            tile.setTilePositions(positions);
             tile.setCorrectOrientation(correctOrientation);
             tile.setOrientation(rand.nextInt(4));
             if (i % columns == (columns - 1)) {

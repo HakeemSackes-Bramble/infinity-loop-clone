@@ -64,7 +64,7 @@ public class TileView extends View {
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(sizePX / 10);
+        paint.setStrokeWidth(sizePX / 9);
         paint.setAntiAlias(true);
         tileDrawings = new TileDrawings(paint, this);
     }
