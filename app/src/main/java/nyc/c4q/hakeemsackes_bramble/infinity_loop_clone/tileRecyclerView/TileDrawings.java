@@ -30,15 +30,15 @@ public class TileDrawings {
     }
 
     public void drawSquareTile(int tileType, Canvas canvas) {
-        float CENTER_X = (float) Math.ceil(mView.getWidth() / 2);
-        float CENTER_Y = (float) Math.ceil(mView.getHeight() / 2);
+        float CENTER_X = mView.getWidth() / 2f;
+        float CENTER_Y = mView.getHeight() / 2f;
         if (tileType == 0) {
             //blank tile
         } else if (tileType == 1) {
             // circle line tile
             newPaint.setColor(color);
-            canvas.drawCircle(CENTER_X, CENTER_Y, mView.getHeight() / 4, newPaint);
-            canvas.drawCircle(CENTER_X, CENTER_Y, mView.getHeight() / 4, mPaint);
+            canvas.drawCircle(CENTER_X, CENTER_Y, mView.getHeight() / 4f, newPaint);
+            canvas.drawCircle(CENTER_X, CENTER_Y, mView.getHeight() / 4f, mPaint);
             canvas.drawLine(CENTER_X, CENTER_Y / 2, CENTER_X, 0, mPaint);
         } else if (tileType == 2) {
             //quarter circle tile

@@ -161,11 +161,10 @@ public class MainActivity extends AppCompatActivity {
     private void setValues() {
 
         rows = rand.nextInt(9) + 5;
-        columns = (rand.nextInt(3) * 2) + 4;
+        columns = rand.nextInt(5) + 5;
         int widthTileSize = maxGameWidth / columns;
         int heightTileSize = maxGameHeight / rows;
         tileSize = Math.min(heightTileSize, widthTileSize);
-        tileSize = tileSize % 2 == 0 ? tileSize : tileSize + 1;
         float hue = rand.nextFloat() * 360;
         float saturation = .05f;
         float value = 1f;
