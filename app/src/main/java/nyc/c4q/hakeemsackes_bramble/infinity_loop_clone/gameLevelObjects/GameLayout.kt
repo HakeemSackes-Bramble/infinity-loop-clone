@@ -18,13 +18,13 @@ class GameLayout(
 ) {
     private val gson: Gson
     private val rand = Random()
-    private var gameTiles: ArrayList<Tile?>
+    public var gameTiles: ArrayList<Tile>
     private val correctlyOriented = HashSet<Int>()
     private val tilePossibilities = TileTypes().tiles
     private var listener: TileAlignmentListener? = null
     var num = 0
     private var allTilesAreAligned = false
-    var mSharedPreferences: SharedPreferences?
+    var mSharedPreferences: SharedPreferences
 
     init {
         gameTiles = ArrayList()
@@ -55,8 +55,8 @@ class GameLayout(
 
     private fun loadTileData() {
         val currPuzzle = mSharedPreferences!!.getString(MainActivity.Companion.CURRENT_PUZZLE, "")
-        val listType = object : TypeToken<ArrayList<Tile?>?>() {}.type
-        val list = gson.fromJson<ArrayList<Tile?>>(currPuzzle, listType)
+        val listType = object : TypeToken<ArrayList<Tile>>() {}.type
+        val list = gson.fromJson<ArrayList<Tile>>(currPuzzle, listType)
         gameTiles = list
         mSharedPreferences!!.edit().clear().apply()
     }
@@ -129,6 +129,7 @@ class GameLayout(
         gameTiles.clear()
         correctlyOriented.clear()
         createGameTiles()
+        mSharedPreferences!!.edit().clear().apply()
     }
 
     private fun checkPosition(i: Int): HashSet<SquareTilePositions?> {

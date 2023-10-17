@@ -15,6 +15,7 @@ import com.google.gson.Gson
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.TileTypes
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter
 import java.util.Random
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView = findViewById(R.id.tile_grid_activity)
     private var button: Button  = findViewById(R.id.activity_button)
     private var linearLayout: LinearLayout = findViewById(R.id.activity_main_LinearLayout)
+    private var tileTypes: TileTypes = TileTypes()
     private var rows = 0
     private var columns = 0
     private var tileSize = 0
@@ -88,19 +90,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkSurroundingTiles(i: Int, prongPosition: String, tilePositions: IntArray, currentTile: Tile, adjacentTileProngPosition: Int) {
-        val surroundingTile = gameLayout.getGameTiles()[tilePositions[i]]
+        val surroundingTile = gameLayout.gameTiles[tilePositions[i]]
         val connectionChecker = prongPosition!![i] == surroundingTile.stringOrientation[adjacentTileProngPosition]
         currentTile!!.isProngConnected(i, connectionChecker)
         surroundingTile!!.isProngConnected(adjacentTileProngPosition, connectionChecker)
         gameLayout!!.addCorrectedTile(tilePositions[i], surroundingTile!!.isProperlyAligned)
-    }
-
-    private void checkSurroundingTiles(int i, String prongPosition, int[] tilePositions, Tile currentTile, int adjacentTileProngPosition) {
-        Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
-        boolean connectionChecker = prongPosition.charAt(i) == surroundingTile.getStringOrientation().charAt(adjacentTileProngPosition);
-        currentTile.isProngConnected(i, connectionChecker);
-        surroundingTile.isProngConnected(adjacentTileProngPosition, connectionChecker);
-        gameLayout.addCorrectedTile(tilePositions[i], surroundingTile.isProperlyAligned());
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,8 +105,7 @@ class MainActivity : AppCompatActivity() {
         button.setBackgroundColor(Color.alpha(0))
         setValues()
         linearLayout.setBackgroundColor(backgroundColor)
-        gameLayout =
-        gameLayout!!.createGame()
+        gameLayout.createGame()
         gameLayout!!.setListener(tileAlignmentListener)
         gridLayoutManager
         recyclerView.setLayoutManager(gridLayoutManager)
@@ -190,7 +183,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        val gameTiles = gameLayout.getGameTiles()
+        val gameTiles = gameLayout.gameTiles
         val jsonGame = gson!!.toJson(gameTiles)
         editor!!.putString(CURRENT_PUZZLE, jsonGame)
         editor!!.putInt(CURRENT_ROW_SIZE, rows)

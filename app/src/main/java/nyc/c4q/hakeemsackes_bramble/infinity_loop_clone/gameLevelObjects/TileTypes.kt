@@ -3,7 +3,7 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects
 /**
  * Created by hakeemsackes-bramble on 10/17/17.
  */
-class TileTypes {
+class TileTypes (){
     /*
      * this section will be used to store different types for future configurations
      * TODO: create method that adds square tile orientations to HashMap programmatically

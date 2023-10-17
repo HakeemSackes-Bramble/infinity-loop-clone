@@ -42,10 +42,6 @@ class Tile internal constructor(
         return stringOrientation
     }
 
-    fun getTilePositions():  {
-
-    }
-
     val isProperlyAligned: Boolean
         get() = alignment[0] && alignment[1] && alignment[2] && alignment[3]
 }
