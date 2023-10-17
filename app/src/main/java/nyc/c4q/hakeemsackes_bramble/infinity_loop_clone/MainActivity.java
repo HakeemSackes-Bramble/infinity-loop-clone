@@ -12,30 +12,42 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileAdapter;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String CURRENT_PUZZLE = "puzzle";
+    private final String CURRENT_ROW_SIZE = "row_size";
+    private final String CURRENT_COLUMN_SIZE = "column_size";
+    private final String CURRENT_BACKGROUND_COLOR = "background_color";
+    private final String CURRENT_TILE_COLOR = "tile_color";
+    private Gson gson;
     public RecyclerView recyclerView;
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
-    private int rows;
-    private int columns;
-    private int tileSize;
-    private int backgroundColor;
-    private int tileColor;
+    private int rows = 0;
+    private int columns = 0;
+    private int tileSize = 0;
+    private int backgroundColor = 0;
+    private int tileColor = 0;
     private static final String TAG = MainActivity.class.getName();
     private static final int maxGameWidth = 360;
     private static final int maxGameHeight = 540;
     private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
-    private SharedPreferences.Editor preferences;
+    SharedPreferences sharedPreferences;
+    static SharedPreferences.Editor editor;
     private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -99,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = getSharedPreferences(getString(R.string.most_recent_game_list), MODE_PRIVATE).edit();
+        gson = new Gson();
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         setContentView(R.layout.activity_main);
         button = findViewById(R.id.activity_button);
         linearLayout = findViewById(R.id.activity_main_LinearLayout);
@@ -107,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
         button.setBackgroundColor(Color.alpha(0));
         setValues();
         linearLayout.setBackgroundColor(backgroundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor, tileAlignmentListener);
-        gameLayout.createGameTiles();
+        gameLayout = new GameLayout(rows, columns, tileColor, tileAlignmentListener, sharedPreferences);
+        gameLayout.createGame();
         gameLayout.setListener(tileAlignmentListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
             @Override
@@ -141,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         Log.d(TAG, "onStop: triggered");
+        saveData();
         super.onStop();
     }
 
@@ -159,21 +174,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-
-        rows = rand.nextInt(9) + 5;
-        columns = rand.nextInt(5) + 5;
+        if (sharedPreferences.contains(CURRENT_BACKGROUND_COLOR)) {
+            int bgcolor = Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f});
+            int tColor = Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f,  0.6f});
+            rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
+            columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
+            backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,bgcolor);
+            tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,tColor);
+            editor.apply();
+        } else {
+            rows = rand.nextInt(9) + 5;
+            columns = rand.nextInt(5) + 5;
+            float hue = rand.nextFloat() * 360;
+            float saturation = .05f;
+            float value = 1f;
+            rustTheme(hue, saturation, value);
+        }
         int widthTileSize = maxGameWidth / columns;
         int heightTileSize = maxGameHeight / rows;
         tileSize = Math.min(heightTileSize, widthTileSize);
-        float hue = rand.nextFloat() * 360;
-        float saturation = .05f;
-        float value = 1f;
-        rustTheme(hue, saturation, value);
     }
 
     void rustTheme(float hue, float saturation, float value) {
         backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-        tileColor = Color.HSVToColor(new float[]{hue, saturation, 0.5f});
+        tileColor = Color.HSVToColor(new float[]{hue, saturation, 0.6f});
     }
 
     void neoDarkTheme(float hue, float saturation, float value) {
@@ -186,4 +210,19 @@ public class MainActivity extends AppCompatActivity {
         tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
     }
 
+    private void saveData() {
+        ArrayList<Tile> gameTiles = gameLayout.getGameTiles();
+        String jsonGame = gson.toJson(gameTiles);
+        editor.putString(CURRENT_PUZZLE, jsonGame);
+        editor.putInt(CURRENT_ROW_SIZE, rows);
+        editor.putInt(CURRENT_COLUMN_SIZE, columns);
+        editor.putInt(CURRENT_BACKGROUND_COLOR, columns);
+        editor.putInt(CURRENT_TILE_COLOR, tileColor);
+        editor.apply();
+    }
+
+    public static void clearSharedPrefs(){
+        editor.clear();
+        editor.apply();
+    }
 }

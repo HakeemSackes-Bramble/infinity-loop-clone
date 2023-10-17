@@ -1,12 +1,22 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
+import android.content.SharedPreferences;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
+
+import com.google.gson.Gson;
+
 import java.util.Set;
 
+
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.MainActivity;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
 
 /**
@@ -20,6 +30,7 @@ public class GameLayout {
     private int tileColor;
     private int rows;
     private int columns;
+    private Gson gson;
     private Random rand = new Random();
     private ArrayList<Tile> gameTiles;
     private HashSet<Integer> correctlyOriented = new HashSet<>();
@@ -27,13 +38,17 @@ public class GameLayout {
     private TileAlignmentListener listener;
     int num = 0;
     private boolean allTilesAreAligned;
+    SharedPreferences mSharedPreferences;
+    public String currGame = "currentGame";
 
-    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener) {
+    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener,SharedPreferences sharedPreferences) {
         this.tileAlignmentListener = tileAlignmentListener;
         this.tileColor = tileColor;
         this.rows = rows;
         this.columns = columns;
         gameTiles = new ArrayList<>();
+        this.gson = new Gson();
+        this.mSharedPreferences = sharedPreferences;
     }
 
     public void createGameTiles() {
@@ -53,6 +68,15 @@ public class GameLayout {
             gameTiles.add(tile);
         }
         num = 0;
+    }
+
+    private void loadTileData() {
+        String currPuzzle = mSharedPreferences.getString(MainActivity.CURRENT_PUZZLE, "");
+        Type listType = new TypeToken<ArrayList<Tile>>() {
+        }.getType();
+        ArrayList<Tile> list = gson.fromJson(currPuzzle, listType);
+        this.gameTiles = list;
+        mSharedPreferences.edit().clear().apply();
     }
 
     public ArrayList<Tile> getGameTiles() {
@@ -122,7 +146,6 @@ public class GameLayout {
     public void resetGame(int rows, int columns, int tileColor) {
         this.rows = rows;
         this.columns = columns;
-        this.tileColor = tileColor;
         gameTiles.clear();
         correctlyOriented.clear();
         createGameTiles();
@@ -156,6 +179,7 @@ public class GameLayout {
             correctlyOriented.remove(position);
         }
     }
+
     public int[] getSurroundingTileNumbers(int position) {
         return new int[]{
                 position - columns,
@@ -164,6 +188,7 @@ public class GameLayout {
                 position - 1
         };
     }
+
     public int getCorrectlyOrientedTileSize() {
         return correctlyOriented.size();
     }
@@ -187,5 +212,13 @@ public class GameLayout {
 
     public boolean hasAllTilesAligned() {
         return allTilesAreAligned;
+    }
+
+    public void createGame() {
+        if (mSharedPreferences.contains(MainActivity.CURRENT_PUZZLE)) {
+            loadTileData();
+        } else {
+            createGameTiles();
+        }
     }
 }
