@@ -24,7 +24,7 @@ class GameLayout(
     private var listener: TileAlignmentListener? = null
     var num = 0
     private var allTilesAreAligned = false
-    var mSharedPreferences: SharedPreferences
+    private var mSharedPreferences: SharedPreferences
 
     init {
         gameTiles = ArrayList()
@@ -32,26 +32,16 @@ class GameLayout(
         mSharedPreferences = sharedPreferences
     }
 
-    fun createGameTiles() {
-        for (i in 0 until rows * columns) {
-            val positions = checkPosition(i)
-            var correctOrientation: Int
-            val typeOfPosition = positionType(i, positions)
-            val tileType = getTileOptions(typeOfPosition)
-            correctOrientation = getOrientationOption(tileType, typeOfPosition)
-            val possibilities: Array<String> = tilePossibilities[tileType]!!
-            val tile = Tile(
-                rand.nextInt(4), tileType, correctOrientation, possibilities
-            )
-            tile.correctOrientation = correctOrientation
-            tile.orientation = rand.nextInt(4)
-            if (i % columns == columns - 1) {
-                num++
-            }
-            gameTiles.add(tile)
-        }
-        num = 0
-    }
+
+
+//    int correctOrientation;
+//    String typeOfPosition = positionType(i, positions);
+//    int tileType = getTileOptions(typeOfPosition);
+//    correctOrientation = getOrientationOption(tileType, typeOfPosition);
+//    Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
+//    tile.setTilePositions(positions);
+//    tile.setCorrectOrientation(correctOrientation);
+//    tile.setOrientation(rand.nextInt(4));
 
     private fun loadTileData() {
         val currPuzzle = mSharedPreferences!!.getString(MainActivity.Companion.CURRENT_PUZZLE, "")
@@ -114,9 +104,9 @@ class GameLayout(
      * @param tileType
      * @return
      */
-    private fun getOrientationOption(tileType: Int, type: String): Int {
+     fun getOrientationOption(tileType: Int, type: String): Int {
         for (j in 1..4) {
-            if (tilePossibilities!![tileType]!![j] == type) {
+            if (tilePossibilities[tileType]!![j] == type) {
                 return j - 1
             }
         }
@@ -129,11 +119,11 @@ class GameLayout(
         gameTiles.clear()
         correctlyOriented.clear()
         createGameTiles()
-        mSharedPreferences!!.edit().clear().apply()
+        mSharedPreferences.edit().clear().apply()
     }
 
-    private fun checkPosition(i: Int): HashSet<SquareTilePositions?> {
-        val positions = HashSet<SquareTilePositions?>()
+    private fun checkPosition(i: Int): HashSet<SquareTilePositions> {
+        val positions = HashSet<SquareTilePositions>()
         val topEdge = i < columns
         val bottomEdge = i >= rows * columns - columns
         val rightEdge = i % columns == columns - 1
@@ -182,9 +172,30 @@ class GameLayout(
     fun hasAllTilesAligned(): Boolean {
         return allTilesAreAligned
     }
+        fun createGameTiles() {
+            for (i in 0 until rows * columns) {
 
+                val positions: HashSet<SquareTilePositions> = checkPosition(i)
+                var correctOrientation: Int
+                val typeOfPosition = positionType(i, positions)
+                val tileType = getTileOptions(typeOfPosition)
+                correctOrientation = getOrientationOption(tileType, typeOfPosition)
+                val possibilities: Array<String> = tilePossibilities[tileType]!!
+                val tile = Tile(
+                    rand.nextInt(4), tileType, correctOrientation, possibilities
+                )
+                tile.setTilePositions(positions);
+                tile.correctOrientation = correctOrientation
+                tile.orientation = rand.nextInt(4)
+                if (i % columns == columns - 1) {
+                    num++
+                }
+                gameTiles.add(tile)
+            }
+            num = 0
+        }
     fun createGame() {
-        if (mSharedPreferences!!.contains(MainActivity.Companion.CURRENT_PUZZLE)) {
+        if (mSharedPreferences.contains(MainActivity.Companion.CURRENT_PUZZLE)) {
             loadTileData()
         } else {
             createGameTiles()

@@ -8,11 +8,11 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLay
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
-class TileAdapter(var gameLayout: GameLayout?, var tileSize: Int) :
+class TileAdapter(var gameLayout: GameLayout, var tileSize: Int) :
     RecyclerView.Adapter<TileViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TileViewHolder {
         return TileViewHolder(
-            TileView(parent.context, gameLayout.getTileColor(), tileSize),
+            TileView(parent.context, gameLayout.tileColor, tileSize),
             gameLayout
         )
     }
@@ -22,6 +22,6 @@ class TileAdapter(var gameLayout: GameLayout?, var tileSize: Int) :
     }
 
     override fun getItemCount(): Int {
-        return gameLayout.getGameTiles().size
+        return gameLayout.gameTiles.size
     }
 }

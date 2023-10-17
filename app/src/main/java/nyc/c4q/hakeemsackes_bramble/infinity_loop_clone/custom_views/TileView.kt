@@ -15,7 +15,7 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView.TileDra
 class TileView : View {
     private var scale: Float
     private var tileId: Tile? = null
-    private var paint: Paint? = null
+    private var paint: Paint = Paint()
     private var sizeDP = 0
     private var sizePX: Float
     private var color = 0
@@ -40,7 +40,7 @@ class TileView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        drawTileType(tileId.getTileType(), canvas)
+        drawTileType(tileId!!.tileType, canvas)
         rotation = posToDegrees(tileId!!.orientation).toFloat()
     }
 
@@ -50,7 +50,6 @@ class TileView : View {
 
     fun setTileValues(tileId: Tile?) {
         this.tileId = tileId
-        paint = Paint()
         paint!!.color = color
         paint!!.style = Paint.Style.STROKE
         paint!!.strokeWidth = sizePX / 9

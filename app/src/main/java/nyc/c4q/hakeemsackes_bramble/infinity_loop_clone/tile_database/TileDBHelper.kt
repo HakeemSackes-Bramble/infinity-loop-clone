@@ -18,7 +18,7 @@ class TileDBHelper(context: Context?, name: String?, factory: CursorFactory?, ve
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PASTGAMES)
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_PASTGAMES")
         onCreate(db)
     }
 
