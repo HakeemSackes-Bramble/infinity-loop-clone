@@ -36,5 +36,4 @@ public enum SquareTilePositions {
     public static SquareTilePositions getTilePositionsFromValue(int i) {
         return tilePositionsFromValue.get(i);
     }
-
 }

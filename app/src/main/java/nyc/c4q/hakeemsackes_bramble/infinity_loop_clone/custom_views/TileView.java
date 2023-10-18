@@ -59,7 +59,7 @@ public class TileView extends View {
         tileDrawings.drawSquareTile(tileType, canvas);
     }
 
-    public void setTileValues(Tile tileId) {
+    public void implementTileValues(Tile tileId) {
         this.tileId = tileId;
         paint = new Paint();
         paint.setColor(color);

@@ -56,12 +56,12 @@ public class GameLayout {
             HashSet<SquareTilePositions> positions = checkPosition(i);
             int correctOrientation;
             String typeOfPosition = positionType(i, positions);
-            int tileType = getTileOptions(typeOfPosition);
-            correctOrientation = getOrientationOption(tileType, typeOfPosition);
+            int tileType = returnValidTile(typeOfPosition);
+            correctOrientation = returnOrientationOption(tileType, typeOfPosition);
             Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
             tile.setTilePositions(positions);
             tile.setCorrectOrientation(correctOrientation);
-            tile.setOrientation(rand.nextInt(4));
+            tile.assignOrientation(rand.nextInt(4));
             if (i % columns == (columns - 1)) {
                 num++;
             }
@@ -89,7 +89,7 @@ public class GameLayout {
      *
      * @return
      */
-    private int getTileOptions(String positionType) {
+    private int returnValidTile(String positionType) {
         int tileType;
         String type = positionType;
         String prongs = type.replace("0", "");
@@ -112,7 +112,7 @@ public class GameLayout {
      */
     private String positionType(int i, Set<SquareTilePositions> positions) {
         char[] type = new char[4];
-        int[] surroundingTilePositions = getSurroundingTileNumbers(i);
+        int[] surroundingTilePositions = surroundingTileNumbers(i);
         for (int j = 3; j < 7; j++) {
             int k = j % 4;
             if (positions.contains(SquareTilePositions.getTilePositionsFromValue(k))) {
@@ -134,7 +134,7 @@ public class GameLayout {
      * @param tileType
      * @return
      */
-    private int getOrientationOption(int tileType, String type) {
+    private int returnOrientationOption(int tileType, String type) {
         for (int j = 1; j < 5; j++) {
             if (tilePossibilities.get(tileType)[j].equals(type)) {
                 return j - 1;
@@ -143,7 +143,7 @@ public class GameLayout {
         return 0;
     }
 
-    public void resetGame(int rows, int columns, int tileColor) {
+    public void resetGame(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
         gameTiles.clear();
@@ -180,7 +180,7 @@ public class GameLayout {
         }
     }
 
-    public int[] getSurroundingTileNumbers(int position) {
+    public int[] surroundingTileNumbers(int position) {
         return new int[]{
                 position - columns,
                 position + 1,

@@ -1,7 +1,6 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.tileRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views.TileView;
@@ -24,7 +23,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
     public void bind(final int position) {
 
         final Tile tile = mGameLayout.getGameTiles().get(position);
-        ((TileView) itemView).setTileValues(tile);
+        ((TileView) itemView).implementTileValues(tile);
         mGameLayout.runCheckTileAlignmentListener(tile, position);
         mGameLayout.addCorrectedTile(position, tile.isProperlyAligned());
 
@@ -36,7 +35,7 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                  */
                 if (!mGameLayout.hasAllTilesAligned()) {
                     ((TileView) itemView).rotateView(tile.getOrientation(), (tile.getOrientation() + 1) % 4);
-                    tile.setOrientation((tile.getOrientation() + 1) % 4);
+                    tile.assignOrientation((tile.getOrientation() + 1) % 4);
                     mGameLayout.runCheckTileAlignmentListener(tile, position);
                 }
             }

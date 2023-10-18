@@ -53,22 +53,21 @@ public class MainActivity extends AppCompatActivity {
         public boolean onTouch(View v, MotionEvent event) {
             MainActivity.this.setValues();
             linearLayout.setBackgroundColor(backgroundColor);
-            gameLayout.resetGame(rows, columns, tileColor);
+            gameLayout.resetGame(rows, columns);
             gridLayoutManager.setSpanCount(columns);
             recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
-            button.setOnTouchListener(null);
             button.setBackgroundColor(Color.alpha(0));
             button.setText("");
             return false;
         }
     };
-    private TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
+    private final TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
 
         @Override
         public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position) {
 
             String prongPos = tile.getStringOrientation();
-            int[] surroundingTilePositions = gameLayout.getSurroundingTileNumbers(position);
+            int[] surroundingTilePositions = gameLayout.surroundingTileNumbers(position);
             for (int i = 0; i < 4; i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles

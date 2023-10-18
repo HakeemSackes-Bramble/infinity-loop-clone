@@ -31,20 +31,8 @@ public class Tile {
         return prongOrientations;
     }
 
-    public void setProngOrientations(String[] prongOrientations) {
-        this.prongOrientations = prongOrientations;
-        this.stringOrientation = prongOrientations[orientation + 1];
-    }
 
-    public void setStringOrientation(String stringOrientation) {
-        this.stringOrientation = stringOrientation;
-    }
-
-    public void setTileType(int tileType) {
-        this.tileType = tileType;
-    }
-
-    public void setOrientation(int orientation) {
+    public void assignOrientation(int orientation) {
         this.orientation = orientation;
         stringOrientation = prongOrientations[orientation + 1];
     }
