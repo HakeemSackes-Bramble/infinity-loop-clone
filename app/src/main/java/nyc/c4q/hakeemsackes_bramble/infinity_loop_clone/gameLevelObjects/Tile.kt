@@ -11,26 +11,27 @@ class Tile internal constructor(
 ) {
     private val alignment = BooleanArray(4)
     var stringOrientation: String
+    var tilePositions: HashSet<SquareTilePositions> = HashSet<SquareTilePositions>()
 
     init {
         stringOrientation = prongOrientations[orientation + 1]
     }
 
-    fun getProngOrientations(): Array<String> {
+    fun newProngOrientations(): Array<String> {
         return prongOrientations
     }
 
-    fun setProngOrientations(prongOrientations: Array<String>) {
+    fun newProngOrientations(prongOrientations: Array<String>) {
         this.prongOrientations = prongOrientations
         stringOrientation = prongOrientations[orientation + 1]
     }
 
-    fun setOrientation(orientation: Int) {
+    fun newOrientation(orientation: Int) {
         this.orientation = orientation
         stringOrientation = prongOrientations[orientation + 1]
     }
 
-    fun getOrientation(): Int {
+    fun returnOrientation(): Int {
         return orientation
     }
 
@@ -38,7 +39,7 @@ class Tile internal constructor(
         alignment[pos] = checkConnection
     }
 
-    fun getStringOrientation(): String {
+    fun newStringOrientation(): String {
         return stringOrientation
     }
 

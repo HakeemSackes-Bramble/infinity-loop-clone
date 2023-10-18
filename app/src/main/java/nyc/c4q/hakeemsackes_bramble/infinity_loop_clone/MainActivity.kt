@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity() {
     private val CURRENT_BACKGROUND_COLOR = "background_color"
     private val CURRENT_TILE_COLOR = "tile_color"
     private var gson: Gson = Gson()
-    private var recyclerView: RecyclerView = findViewById(R.id.tile_grid_activity)
-    private var button: Button  = findViewById(R.id.activity_button)
-    private var linearLayout: LinearLayout = findViewById(R.id.activity_main_LinearLayout)
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var button: Button
+    private lateinit var linearLayout: LinearLayout
     private var tileTypes: TileTypes = TileTypes()
     private var rows = 0
     private var columns = 0
@@ -36,15 +36,10 @@ class MainActivity : AppCompatActivity() {
     private var backgroundColor = 0
     private var tileColor = 0
     private val rand = Random()
-    private var gridLayoutManager: GridLayoutManager =
-    object : GridLayoutManager(applicationContext, columns, RecyclerView.VERTICAL, false) {
-        override fun canScrollVertically(): Boolean {
-            return false
-        }
-    }
-    private var sharedPreferences: SharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
-    private var editor = sharedPreferences.edit()
-    private var gameLayout: GameLayout = GameLayout(rows, columns, tileColor, sharedPreferences)
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+    private lateinit var gameLayout: GameLayout
     private val allTilesAligned = OnTouchListener { v, event ->
         setValues()
         linearLayout!!.setBackgroundColor(backgroundColor)
@@ -58,12 +53,12 @@ class MainActivity : AppCompatActivity() {
     }
     private val tileAlignmentListener: TileAlignmentListener = object : TileAlignmentListener {
         override fun checkTileAlignment(gameLayout: GameLayout, tile: Tile, position: Int) {
-            val prongPos = tile.getStringOrientation()
+            val prongPos = tile.newStringOrientation()
             val surroundingTilePositions = gameLayout.getSurroundingTileNumbers(position)
             for (i in 0..3) {
                 val surPos = (i + 2) % 4
                 // check center tiles
-                if (tile.getTilePositions()
+                if (tile.tilePositions
                         .contains(SquareTilePositions.Companion.getTilePositionsFromValue(i))
                 ) {
                     checkForEdgeFacingProngs(tile, i)
@@ -71,27 +66,34 @@ class MainActivity : AppCompatActivity() {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos)
                 }
             }
-            gameLayout.addCorrectedTile(position, tile!!.isProperlyAligned)
+            gameLayout.addCorrectedTile(position, tile.isProperlyAligned)
             onAllTilesAligned(gameLayout.hasAllTilesAligned())
         }
 
         override fun checkPathAlignment() {}
         override fun onAllTilesAligned(alignedTiles: Boolean) {
             if (alignedTiles) {
-                button!!.setOnTouchListener(allTilesAligned)
-                button!!.setTextColor(tileColor)
-                button!!.text = "NEXT"
+                button.setOnTouchListener(allTilesAligned)
+                button.setTextColor(tileColor)
+                button.text = "NEXT"
             }
         }
     }
 
     private fun checkForEdgeFacingProngs(tile: Tile, i: Int) {
-        tile!!.isProngConnected(i, tile.stringOrientation!![i] == '0')
+        tile.isProngConnected(i, tile.stringOrientation!![i] == '0')
     }
 
-    private fun checkSurroundingTiles(i: Int, prongPosition: String, tilePositions: IntArray, currentTile: Tile, adjacentTileProngPosition: Int) {
+    private fun checkSurroundingTiles(
+        i: Int,
+        prongPosition: String,
+        tilePositions: IntArray,
+        currentTile: Tile,
+        adjacentTileProngPosition: Int
+    ) {
         val surroundingTile = gameLayout.gameTiles[tilePositions[i]]
-        val connectionChecker = prongPosition!![i] == surroundingTile.stringOrientation[adjacentTileProngPosition]
+        val connectionChecker =
+            prongPosition!![i] == surroundingTile.stringOrientation[adjacentTileProngPosition]
         currentTile!!.isProngConnected(i, connectionChecker)
         surroundingTile!!.isProngConnected(adjacentTileProngPosition, connectionChecker)
         gameLayout!!.addCorrectedTile(tilePositions[i], surroundingTile!!.isProperlyAligned)
@@ -99,15 +101,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_main)
-
-        button.setBackgroundColor(Color.alpha(0))
+        this.setContentView(R.layout.activity_main)
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
+        editor = sharedPreferences.edit()
         setValues()
+        gridLayoutManager =
+            object : GridLayoutManager(applicationContext, columns, RecyclerView.VERTICAL, false) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
+        button = findViewById(R.id.activity_button)
+        button.setBackgroundColor(Color.alpha(0))
+        gameLayout = GameLayout(rows, columns, tileColor, sharedPreferences)
+        linearLayout = findViewById(R.id.activity_main_LinearLayout)
         linearLayout.setBackgroundColor(backgroundColor)
         gameLayout.createGame()
-        gameLayout!!.setListener(tileAlignmentListener)
-        gridLayoutManager
+        gameLayout.setListener(tileAlignmentListener)
+        recyclerView = findViewById(R.id.tile_grid_activity)
         recyclerView.setLayoutManager(gridLayoutManager)
         recyclerView.setAdapter(TileAdapter(gameLayout, tileSize))
     }
@@ -185,21 +196,21 @@ class MainActivity : AppCompatActivity() {
     private fun saveData() {
         val gameTiles = gameLayout.gameTiles
         val jsonGame = gson!!.toJson(gameTiles)
-        editor!!.putString(CURRENT_PUZZLE, jsonGame)
-        editor!!.putInt(CURRENT_ROW_SIZE, rows)
-        editor!!.putInt(CURRENT_COLUMN_SIZE, columns)
-        editor!!.putInt(CURRENT_BACKGROUND_COLOR, columns)
-        editor!!.putInt(CURRENT_TILE_COLOR, tileColor)
-        editor!!.apply()
+        editor.putString(CURRENT_PUZZLE, jsonGame)
+        editor.putInt(CURRENT_ROW_SIZE, rows)
+        editor.putInt(CURRENT_COLUMN_SIZE, columns)
+        editor.putInt(CURRENT_BACKGROUND_COLOR, columns)
+        editor.putInt(CURRENT_TILE_COLOR, tileColor)
+        editor.apply()
     }
 
     companion object {
         const val SHARED_PREFS = "sharedPrefs"
         const val CURRENT_PUZZLE = "puzzle"
-        private val TAG = MainActivity::class.java.name
+        private const val TAG = "MainActivity"
         private const val maxGameWidth = 360
         private const val maxGameHeight = 540
-        var editor: SharedPreferences.Editor? = null
+        private var editor: SharedPreferences.Editor? = null
         fun clearSharedPrefs() {
             editor!!.clear()
             editor!!.apply()

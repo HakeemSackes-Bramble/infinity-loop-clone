@@ -10,13 +10,12 @@ import java.util.Random
  * Created by hakeemsackes-bramble on 11/12/17.
  */
 class TileDrawings(private val mPaint: Paint, view: View) {
-    private val newPaint: Paint
+    private val newPaint: Paint = Paint()
     private val color: Int
     private val mView: View
     private val rand = Random()
 
     init {
-        newPaint = Paint()
         newPaint.style = Paint.Style.FILL
         mView = view
         val hue = rand.nextFloat() * 360

@@ -21,7 +21,7 @@ class GameLayout(
     public var gameTiles: ArrayList<Tile>
     private val correctlyOriented = HashSet<Int>()
     private val tilePossibilities = TileTypes().tiles
-    private var listener: TileAlignmentListener? = null
+    private lateinit var listener: TileAlignmentListener
     var num = 0
     private var allTilesAreAligned = false
     private var mSharedPreferences: SharedPreferences
@@ -157,7 +157,7 @@ class GameLayout(
     val correctlyOrientedTileSize: Int
         get() = correctlyOriented.size
 
-    fun setListener(listener: TileAlignmentListener?) {
+    fun setListener(listener: TileAlignmentListener) {
         this.listener = listener
     }
 
@@ -166,7 +166,7 @@ class GameLayout(
     }
 
     fun runCheckTileAlignmentListener(tile: Tile, position: Int) {
-        listener!!.checkTileAlignment(this, tile, position)
+        listener.checkTileAlignment(this, tile, position)
     }
 
     fun hasAllTilesAligned(): Boolean {
@@ -184,7 +184,7 @@ class GameLayout(
                 val tile = Tile(
                     rand.nextInt(4), tileType, correctOrientation, possibilities
                 )
-                tile.setTilePositions(positions);
+                tile.tilePositions = positions
                 tile.correctOrientation = correctOrientation
                 tile.orientation = rand.nextInt(4)
                 if (i % columns == columns - 1) {

@@ -50,21 +50,21 @@ class TileView : View {
 
     fun setTileValues(tileId: Tile?) {
         this.tileId = tileId
-        paint!!.color = color
-        paint!!.style = Paint.Style.STROKE
-        paint!!.strokeWidth = sizePX / 9
-        paint!!.isAntiAlias = true
-        tileDrawings = TileDrawings(paint!!, this)
+        paint.color = color
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = sizePX / 9
+        paint.isAntiAlias = true
+        tileDrawings = TileDrawings(paint, this)
     }
 
     fun rotateView(oldPos: Int, newPos: Int) {
-        var newPos = newPos
-        if (oldPos > newPos) {
-            newPos = oldPos + 1
+        var nPos: Int = newPos
+        if (oldPos > nPos) {
+            nPos = oldPos + 1
         }
         val tileViewObjectAnimator = ObjectAnimator.ofFloat(
             this,
-            "rotation", posToDegrees(oldPos).toFloat(), posToDegrees(newPos).toFloat()
+            "rotation", posToDegrees(oldPos).toFloat(), posToDegrees(nPos).toFloat()
         )
         tileViewObjectAnimator.duration = 160
         tileViewObjectAnimator.start()
