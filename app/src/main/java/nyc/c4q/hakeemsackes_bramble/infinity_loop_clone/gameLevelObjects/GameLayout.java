@@ -22,7 +22,6 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentL
 
 public class GameLayout {
 
-    private static final String TAG = GameLayout.class.getName();
     private TileAlignmentListener tileAlignmentListener;
     private int tileColor;
     private int rows;
@@ -184,20 +183,12 @@ public class GameLayout {
         };
     }
 
-    public int getCorrectlyOrientedTileSize() {
-        return correctlyOriented.size();
-    }
-
     public void setListener(TileAlignmentListener listener) {
         this.listener = listener;
     }
 
     public int getTileColor() {
         return tileColor;
-    }
-
-    public void runAllTilesAlignedListener() {
-        listener.onAllTilesAligned(allTilesAreAligned);
     }
 
     public void runCheckTileAlignmentListener(Tile tile, int position) {

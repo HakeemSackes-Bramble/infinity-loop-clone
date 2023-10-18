@@ -1,5 +1,6 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -48,17 +49,26 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager gridLayoutManager;
     SharedPreferences sharedPreferences;
     static SharedPreferences.Editor editor;
-    private View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
+    private final View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            MainActivity.this.setValues();
-            linearLayout.setBackgroundColor(backgroundColor);
-            gameLayout.resetGame(rows, columns);
-            gridLayoutManager.setSpanCount(columns);
-            recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
-            button.setBackgroundColor(Color.alpha(0));
-            button.setText("");
-            return false;
+            int action = event.getActionMasked();
+
+            if (action == MotionEvent.ACTION_DOWN && gameLayout.hasAllTilesAligned()) {
+                MainActivity.this.setValues();
+                linearLayout.setBackgroundColor(backgroundColor);
+                gameLayout.resetGame(rows, columns);
+                gridLayoutManager.setSpanCount(columns);
+                recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
+                button.setBackgroundColor(Color.alpha(0));
+                button.setActivated(false);
+                v.performClick();
+                return true;
+            } else {
+                button.setText("");
+            }
+            return MainActivity.super.onTouchEvent(event);
         }
     };
     private final TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
@@ -85,9 +95,11 @@ public class MainActivity extends AppCompatActivity {
         public void checkPathAlignment() {
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
+                button.setActivated(true);
                 button.setOnTouchListener(allTilesAligned);
                 button.setTextColor(tileColor);
                 button.setText("NEXT");

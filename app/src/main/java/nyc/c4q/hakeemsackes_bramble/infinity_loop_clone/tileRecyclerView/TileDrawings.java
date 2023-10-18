@@ -12,7 +12,7 @@ import java.util.Random;
  */
 
 public class TileDrawings {
-    private Paint newPaint;
+    private Paint newPaint  = new Paint();
     private int color;
     private Paint mPaint;
     private View mView;
@@ -20,7 +20,6 @@ public class TileDrawings {
 
     public TileDrawings(Paint paint, View view) {
         this.mPaint = paint;
-        this.newPaint = new Paint();
         newPaint.setStyle(Paint.Style.FILL);
         this.mView = view;
         float hue = rand.nextFloat() * 360;
