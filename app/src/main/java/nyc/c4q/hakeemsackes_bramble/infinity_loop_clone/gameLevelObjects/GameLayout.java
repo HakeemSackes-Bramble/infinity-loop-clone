@@ -2,6 +2,7 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -10,11 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
-
-import com.google.gson.Gson;
-
 import java.util.Set;
-
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.MainActivity;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
@@ -30,9 +27,9 @@ public class GameLayout {
     private int tileColor;
     private int rows;
     private int columns;
-    private Gson gson;
-    private Random rand = new Random();
-    private ArrayList<Tile> gameTiles;
+    private Gson gson = new Gson();
+    private final Random rand = new Random();
+    private ArrayList<Tile> gameTiles = new ArrayList<>();
     private HashSet<Integer> correctlyOriented = new HashSet<>();
     private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
@@ -41,13 +38,11 @@ public class GameLayout {
     SharedPreferences mSharedPreferences;
     public String currGame = "currentGame";
 
-    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener,SharedPreferences sharedPreferences) {
+    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener, SharedPreferences sharedPreferences) {
         this.tileAlignmentListener = tileAlignmentListener;
         this.tileColor = tileColor;
         this.rows = rows;
         this.columns = columns;
-        gameTiles = new ArrayList<>();
-        this.gson = new Gson();
         this.mSharedPreferences = sharedPreferences;
     }
 
