@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 gridLayoutManager.setSpanCount(columns);
                 recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
                 button.setBackgroundColor(Color.alpha(0));
-                button.setActivated(false);
                 v.performClick();
                 return true;
             } else {
@@ -95,12 +94,9 @@ public class MainActivity extends AppCompatActivity {
         public void checkPathAlignment() {
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
-                button.setActivated(true);
-                button.setOnTouchListener(allTilesAligned);
                 button.setTextColor(tileColor);
                 button.setText("NEXT");
             }
@@ -119,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         gameLayout.addCorrectedTile(tilePositions[i], surroundingTile.isProperlyAligned());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         };
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
+        button.setOnTouchListener(allTilesAligned);
     }
 
     @Override
@@ -229,11 +227,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(CURRENT_COLUMN_SIZE, columns);
         editor.putInt(CURRENT_BACKGROUND_COLOR, columns);
         editor.putInt(CURRENT_TILE_COLOR, tileColor);
-        editor.apply();
-    }
-
-    public static void clearSharedPrefs(){
-        editor.clear();
         editor.apply();
     }
 }
