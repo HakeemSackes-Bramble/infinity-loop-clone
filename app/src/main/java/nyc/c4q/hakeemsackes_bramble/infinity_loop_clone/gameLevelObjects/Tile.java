@@ -7,6 +7,8 @@ import java.util.HashSet;
  */
 
 public class Tile {
+
+    private int pathId;
     private int orientation;
     private int tileType;
     private int correctOrientation;
@@ -18,7 +20,7 @@ public class Tile {
     Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
         this.orientation = orientation;
         this.prongOrientations = prongOrientations;
-        stringOrientation = prongOrientations[orientation + 1];
+        this.stringOrientation = prongOrientations[orientation + 1];
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
     }
@@ -67,5 +69,13 @@ public class Tile {
 
     public boolean isProperlyAligned() {
         return alignment[0] && alignment[1] && alignment[2] && alignment[3];
+    }
+
+    public int getPathId() {
+        return pathId;
+    }
+
+    public void setPathId(int pathId) {
+        this.pathId = pathId;
     }
 }

@@ -9,6 +9,9 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 public interface TileAlignmentListener {
     void checkTileAlignment(GameLayout gameLayout, Tile tile, int position);
-    void checkPathAlignment();
+    void checkPathAlignment(int pathId, GameLayout gameLayout);
+
+    void onPathComplete();
+
     void onAllTilesAligned(boolean alignedTiles);
 }

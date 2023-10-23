@@ -22,7 +22,6 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentL
 
 public class GameLayout {
 
-    private TileAlignmentListener tileAlignmentListener;
     private int tileColor;
     private int rows;
     private int columns;
@@ -35,14 +34,17 @@ public class GameLayout {
     int num = 0;
     private boolean allTilesAreAligned;
     SharedPreferences mSharedPreferences;
-    public String currGame = "currentGame";
 
-    public GameLayout(int rows, int columns, int tileColor, TileAlignmentListener tileAlignmentListener, SharedPreferences sharedPreferences) {
-        this.tileAlignmentListener = tileAlignmentListener;
+    SharedPreferences.Editor edit;
+
+    private HashMap<Integer, Path> pathMap = new HashMap<>();
+
+    public GameLayout(int rows, int columns, int tileColor, SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
         this.tileColor = tileColor;
         this.rows = rows;
         this.columns = columns;
         this.mSharedPreferences = sharedPreferences;
+        this.edit = editor;
     }
 
     public void createGameTiles() {
@@ -55,7 +57,7 @@ public class GameLayout {
             Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
             tile.setTilePositions(positions);
             tile.setCorrectOrientation(correctOrientation);
-            tile.assignOrientation(rand.nextInt(4));
+            tile.assignOrientation(correctOrientation);
             if (i % columns == (columns - 1)) {
                 num++;
             }
@@ -70,7 +72,16 @@ public class GameLayout {
         }.getType();
         ArrayList<Tile> list = gson.fromJson(currPuzzle, listType);
         this.gameTiles = list;
-        mSharedPreferences.edit().clear().apply();
+        removeSavedData();
+    }
+
+    public void removeSavedData() {
+        edit.remove(MainActivity.CURRENT_PUZZLE);
+        edit.remove(MainActivity.CURRENT_COLUMN_SIZE);
+        edit.remove(MainActivity.CURRENT_ROW_SIZE);
+        edit.remove(MainActivity.CURRENT_TILE_COLOR);
+        edit.remove(MainActivity.CURRENT_BACKGROUND_COLOR);
+        edit.apply();
     }
 
     public ArrayList<Tile> getGameTiles() {
@@ -85,11 +96,10 @@ public class GameLayout {
      */
     private int returnValidTile(String positionType) {
         int tileType;
-        String type = positionType;
-        String prongs = type.replace("0", "");
+        String prongs = positionType.replace("0", "");
         if (prongs.length() > 2) {
             tileType = prongs.length() + 1;
-        } else if (type.contains("101")) {
+        } else if (positionType.contains("101")) {
             tileType = 3;
         } else {
             tileType = prongs.length();
@@ -130,7 +140,7 @@ public class GameLayout {
      */
     private int returnOrientationOption(int tileType, String type) {
         for (int j = 1; j < 5; j++) {
-            if (tilePossibilities.get(tileType)[j].equals(type)) {
+            if (Objects.requireNonNull(tilePossibilities.get(tileType))[j].equals(type)) {
                 return j - 1;
             }
         }
@@ -151,7 +161,6 @@ public class GameLayout {
         boolean bottomEdge = i >= ((rows * columns) - columns);
         boolean rightEdge = i % columns == columns - 1;
         boolean leftEdge = i % columns == 0;
-
         if (topEdge)
             positions.add(SquareTilePositions.TOP_EDGE);
         if (bottomEdge)
@@ -193,7 +202,6 @@ public class GameLayout {
 
     public void runCheckTileAlignmentListener(Tile tile, int position) {
         listener.checkTileAlignment(this, tile, position);
-
     }
 
     public boolean hasAllTilesAligned() {
@@ -207,4 +215,21 @@ public class GameLayout {
             createGameTiles();
         }
     }
+
+    void addNewPathToMap(int pathId, Path path) {
+        pathMap.put(pathId, path);
+    }
+
+    void removePathFromMap(int pathId) {
+        pathMap.remove(pathId);
+    }
+
+    public HashMap<Integer, Path> getPathMap() {
+        return pathMap;
+    }
+
+    public void setPathMap(HashMap<Integer, Path> pathMap) {
+        this.pathMap = pathMap;
+    }
+
 }

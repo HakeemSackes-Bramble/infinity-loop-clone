@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String CURRENT_PUZZLE = "puzzle";
-    private final String CURRENT_ROW_SIZE = "row_size";
-    private final String CURRENT_COLUMN_SIZE = "column_size";
-    private final String CURRENT_BACKGROUND_COLOR = "background_color";
-    private final String CURRENT_TILE_COLOR = "tile_color";
+    public static final String CURRENT_ROW_SIZE = "row_size";
+    public static final String CURRENT_COLUMN_SIZE = "column_size";
+    public static final String CURRENT_BACKGROUND_COLOR = "background_color";
+    public static final String CURRENT_TILE_COLOR = "tile_color";
     private Gson gson;
     public RecyclerView recyclerView;
     private GameLayout gameLayout;
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             if (action == MotionEvent.ACTION_DOWN && gameLayout.hasAllTilesAligned()) {
                 MainActivity.this.setValues();
                 linearLayout.setBackgroundColor(backgroundColor);
+                gameLayout.removeSavedData();
                 gameLayout.resetGame(rows, columns);
                 gridLayoutManager.setSpanCount(columns);
                 recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
@@ -86,12 +87,19 @@ public class MainActivity extends AppCompatActivity {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
+            checkPathAlignment(tile.getPathId(), gameLayout);
             gameLayout.addCorrectedTile(position, tile.isProperlyAligned());
             onAllTilesAligned(gameLayout.hasAllTilesAligned());
         }
 
         @Override
-        public void checkPathAlignment() {
+        public void checkPathAlignment(int pathId, GameLayout gameLayout) {
+//            gameLayout.getPathMap().get(pathId).isPathComplete();
+        }
+
+        @Override
+        public void onPathComplete() {
+            //disappear and slide down, change color,  do somehting.
         }
 
         @Override
@@ -129,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         button.setBackgroundColor(Color.alpha(0));
         setValues();
         linearLayout.setBackgroundColor(backgroundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor, tileAlignmentListener, sharedPreferences);
+        gameLayout = new GameLayout(rows, columns, tileColor, sharedPreferences, editor);
         gameLayout.createGame();
         gameLayout.setListener(tileAlignmentListener);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
@@ -183,22 +191,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-        if (sharedPreferences.contains(CURRENT_BACKGROUND_COLOR)) {
-            int bgcolor = Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f});
-            int tColor = Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f,  0.6f});
-            rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
-            columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
-            backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,bgcolor);
-            tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,tColor);
-            editor.apply();
-        } else {
-            rows = rand.nextInt(9) + 5;
-            columns = rand.nextInt(5) + 5;
-            float hue = rand.nextFloat() * 360;
-            float saturation = .05f;
-            float value = 1f;
-            rustTheme(hue, saturation, value);
-        }
+
+        rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
+        columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
+        backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,
+                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f}));
+        tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,
+                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
+        editor.apply();
+
         int widthTileSize = maxGameWidth / columns;
         int heightTileSize = maxGameHeight / rows;
         tileSize = Math.min(heightTileSize, widthTileSize);
@@ -229,4 +230,5 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(CURRENT_TILE_COLOR, tileColor);
         editor.apply();
     }
+
 }
