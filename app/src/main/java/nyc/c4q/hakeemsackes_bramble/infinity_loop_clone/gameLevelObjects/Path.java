@@ -12,6 +12,10 @@ public class Path {
     public Path() {
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isPathComplete() {
         return fullyAlignedTiles.size() == connectedTiles.size();
     }
