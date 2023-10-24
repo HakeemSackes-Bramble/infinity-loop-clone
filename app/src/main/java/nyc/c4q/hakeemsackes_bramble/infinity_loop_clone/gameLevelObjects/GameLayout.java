@@ -28,8 +28,8 @@ public class GameLayout {
     private Gson gson = new Gson();
     private final Random rand = new Random();
     private ArrayList<Tile> gameTiles = new ArrayList<>();
-    private HashSet<Integer> correctlyOriented = new HashSet<>();
-    private HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
+    private final HashSet<Integer> correctlyOriented = new HashSet<>();
+    private final HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
     int num = 0;
     private boolean allTilesAreAligned;
@@ -92,7 +92,7 @@ public class GameLayout {
      * This method returns a valid tile given its position and relation to other existing tiles.
      * <p>
      *
-     * @return
+     * @return integer representation of tileType
      */
     private int returnValidTile(String positionType) {
         int tileType;
@@ -132,10 +132,12 @@ public class GameLayout {
     }
 
     /**
-     * This method returns a valid tile given its position and relation to other existing tiles.
-     * <p>
+     * Method compares the manufactured tile type to the list of tile
+     * possibilities within TilePossibilities object ["2", "1001", "1100", "0110", "0011"]  to return the correct orientation of the generated tile
+     * represented by an integer between 0 and 3 inclusive
      *
      * @param tileType
+     * @param type
      * @return
      */
     private int returnOrientationOption(int tileType, String type) {
@@ -147,6 +149,12 @@ public class GameLayout {
         return 0;
     }
 
+    /**
+     * resets te current game level with new tiles given the new column and row attributes
+     *
+     * @param rows
+     * @param columns
+     */
     public void resetGame(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;

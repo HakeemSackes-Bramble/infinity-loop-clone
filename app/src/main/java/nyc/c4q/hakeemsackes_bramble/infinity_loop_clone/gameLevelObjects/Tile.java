@@ -7,7 +7,6 @@ import java.util.HashSet;
  */
 
 public class Tile {
-
     private int pathId;
     private int orientation;
     private int tileType;
