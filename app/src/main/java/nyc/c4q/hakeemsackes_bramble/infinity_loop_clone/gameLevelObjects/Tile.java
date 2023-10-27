@@ -14,14 +14,19 @@ public class Tile {
     private boolean[] alignment = new boolean[4];
     private String[] prongOrientations;
     private HashSet<SquareTilePositions> tilePositions;
+
+    private HashSet<Integer> connectedProngs = new HashSet<>();
     private String stringOrientation;
+    private String correctStringOrientation;
 
     Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
-        this.orientation = orientation;
         this.prongOrientations = prongOrientations;
-        this.stringOrientation = prongOrientations[orientation + 1];
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
+        this.orientation = orientation;
+        this.correctStringOrientation = prongOrientations[correctOrientation + 1];
+        assignStringOrientation(orientation);
+
     }
 
     public String getStringOrientation() {
@@ -35,7 +40,11 @@ public class Tile {
 
     public void assignOrientation(int orientation) {
         this.orientation = orientation;
-        stringOrientation = prongOrientations[orientation + 1];
+        assignStringOrientation(orientation);
+    }
+
+    public void assignStringOrientation(int orient){
+        stringOrientation = prongOrientations[orient + 1];
     }
 
     public int getOrientation() {
@@ -64,6 +73,11 @@ public class Tile {
 
     public void isProngConnected(int pos, boolean checkConnection) {
         alignment[pos] = checkConnection;
+        if (checkConnection && stringOrientation.charAt(pos) == '1') {
+            connectedProngs.add(pos);
+        } else {
+            connectedProngs.remove(pos);
+        }
     }
 
     public boolean isProperlyAligned() {
@@ -76,5 +90,9 @@ public class Tile {
 
     public void setPathId(int pathId) {
         this.pathId = pathId;
+    }
+
+    public String getCorrectStringOrientation() {
+        return correctStringOrientation;
     }
 }

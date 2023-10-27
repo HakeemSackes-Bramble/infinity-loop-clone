@@ -25,18 +25,15 @@ public class GameLayout {
     private int tileColor;
     private int rows;
     private int columns;
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
     private final Random rand = new Random();
     private ArrayList<Tile> gameTiles = new ArrayList<>();
     private final HashSet<Integer> correctlyOriented = new HashSet<>();
     private final HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
-    int num = 0;
     private boolean allTilesAreAligned;
     SharedPreferences mSharedPreferences;
-
     SharedPreferences.Editor edit;
-
     private HashMap<Integer, Path> pathMap = new HashMap<>();
 
     public GameLayout(int rows, int columns, int tileColor, SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
@@ -50,20 +47,13 @@ public class GameLayout {
     public void createGameTiles() {
         for (int i = 0; i < rows * columns; i++) {
             HashSet<SquareTilePositions> positions = checkPosition(i);
-            int correctOrientation;
             String typeOfPosition = positionType(i, positions);
             int tileType = returnValidTile(typeOfPosition);
-            correctOrientation = returnOrientationOption(tileType, typeOfPosition);
+            int correctOrientation = returnOrientationOption(tileType, typeOfPosition);
             Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
             tile.setTilePositions(positions);
-            tile.setCorrectOrientation(correctOrientation);
-            tile.assignOrientation(correctOrientation);
-            if (i % columns == (columns - 1)) {
-                num++;
-            }
             gameTiles.add(tile);
         }
-        num = 0;
     }
 
     private void loadTileData() {
@@ -123,13 +113,29 @@ public class GameLayout {
                 type[k] = '0';
             } else if (j < 5) {
                 Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
-                type[k] = adjacentTile.getProngOrientations()[adjacentTile.getCorrectOrientation() + 1].charAt((k + 2) % 4);
+                type[k] = adjacentTile.getCorrectStringOrientation().charAt((k + 2) % 4);
             } else {
                 type[k] = (char) (rand.nextInt(2) + 48);
             }
         }
         return String.valueOf(type);
     }
+//    private String positionType2(int i, Set<SquareTilePositions> positions) {
+//        int type = 0;
+//        int[] surroundingTilePositions = surroundingTileNumbers(i);
+//        for (int j = 3; j < 7; j++) {
+//            int k = j % 4;
+//            if (positions.contains(SquareTilePositions.getTilePositionsFromValue(k))) {
+//                type[k] = '0';
+//            } else if (j < 5) {
+//                Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
+//                type[k] = adjacentTile.getStringOrientation().charAt((k + 2) % 4);
+//            } else {
+//                type[k] = (char) (rand.nextInt(2) + 48);
+//            }
+//        }
+//        return String.valueOf(type);
+//    }
 
     /**
      * Method compares the manufactured tile type to the list of tile
