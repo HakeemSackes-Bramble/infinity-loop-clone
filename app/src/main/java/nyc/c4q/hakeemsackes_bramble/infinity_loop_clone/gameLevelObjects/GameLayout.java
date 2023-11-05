@@ -1,6 +1,7 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,16 +33,19 @@ public class GameLayout {
     private final HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
     private boolean allTilesAreAligned;
-    SharedPreferences mSharedPreferences;
-    SharedPreferences.Editor edit;
-    private HashMap<Integer, Path> pathMap = new HashMap<>();
 
-    public GameLayout(int rows, int columns, int tileColor, SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
-        this.tileColor = tileColor;
-        this.rows = rows;
-        this.columns = columns;
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor edit;
+    private HashMap<Integer, Path> pathMap = new HashMap<>();
+    private static final int maxGameWidth = 360;
+    private static final int maxGameHeight = 540;
+    private int backgroundColor;
+    private int tileSize;
+
+    public GameLayout( SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
         this.mSharedPreferences = sharedPreferences;
         this.edit = editor;
+        setValues();
     }
 
     public void createGameTiles() {
@@ -60,8 +64,7 @@ public class GameLayout {
         String currPuzzle = mSharedPreferences.getString(MainActivity.CURRENT_PUZZLE, "");
         Type listType = new TypeToken<ArrayList<Tile>>() {
         }.getType();
-        ArrayList<Tile> list = gson.fromJson(currPuzzle, listType);
-        this.gameTiles = list;
+        this.gameTiles = gson.fromJson(currPuzzle, listType);
         removeSavedData();
     }
 
@@ -120,22 +123,6 @@ public class GameLayout {
         }
         return String.valueOf(type);
     }
-//    private String positionType2(int i, Set<SquareTilePositions> positions) {
-//        int type = 0;
-//        int[] surroundingTilePositions = surroundingTileNumbers(i);
-//        for (int j = 3; j < 7; j++) {
-//            int k = j % 4;
-//            if (positions.contains(SquareTilePositions.getTilePositionsFromValue(k))) {
-//                type[k] = '0';
-//            } else if (j < 5) {
-//                Tile adjacentTile = gameTiles.get(surroundingTilePositions[k]);
-//                type[k] = adjacentTile.getStringOrientation().charAt((k + 2) % 4);
-//            } else {
-//                type[k] = (char) (rand.nextInt(2) + 48);
-//            }
-//        }
-//        return String.valueOf(type);
-//    }
 
     /**
      * Method compares the manufactured tile type to the list of tile
@@ -158,12 +145,10 @@ public class GameLayout {
     /**
      * resets te current game level with new tiles given the new column and row attributes
      *
-     * @param rows
-     * @param columns
      */
-    public void resetGame(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+    public void resetGame() {
+        edit.clear().apply();
+        setValues();
         gameTiles.clear();
         correctlyOriented.clear();
         createGameTiles();
@@ -230,6 +215,21 @@ public class GameLayout {
         }
     }
 
+    public void setValues() {
+
+        rows = mSharedPreferences.getInt(MainActivity.CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
+        columns = mSharedPreferences.getInt(MainActivity.CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
+        backgroundColor = mSharedPreferences.getInt(MainActivity.CURRENT_BACKGROUND_COLOR,
+                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f}));
+        tileColor = mSharedPreferences.getInt(MainActivity.CURRENT_TILE_COLOR,
+                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
+        edit.apply();
+
+        int widthTileSize = maxGameWidth / columns;
+        int heightTileSize = maxGameHeight / rows;
+        tileSize = Math.min(heightTileSize, widthTileSize);
+    }
+
     void addNewPathToMap(int pathId, Path path) {
         pathMap.put(pathId, path);
     }
@@ -246,4 +246,51 @@ public class GameLayout {
         this.pathMap = pathMap;
     }
 
+    public void setTileColor(int tileColor) {
+        this.tileColor = tileColor;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public SharedPreferences getmSharedPreferences() {
+        return mSharedPreferences;
+    }
+
+    public void setmSharedPreferences(SharedPreferences mSharedPreferences) {
+        this.mSharedPreferences = mSharedPreferences;
+    }
+
+    public SharedPreferences.Editor getEdit() {
+        return edit;
+    }
+
+    public void setEdit(SharedPreferences.Editor edit) {
+        this.edit = edit;
+    }
+
+    public int getTileSize() {
+        return tileSize;
+    }
 }

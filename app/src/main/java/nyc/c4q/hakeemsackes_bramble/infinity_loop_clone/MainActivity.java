@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions;
@@ -37,15 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private GameLayout gameLayout;
     private Button button;
     private LinearLayout linearLayout;
-    private int rows = 0;
-    private int columns = 0;
-    private int tileSize = 0;
-    private int backgroundColor = 0;
-    private int tileColor = 0;
     private static final String TAG = MainActivity.class.getName();
-    private static final int maxGameWidth = 360;
-    private static final int maxGameHeight = 540;
-    private Random rand = new Random();
     private GridLayoutManager gridLayoutManager;
     SharedPreferences sharedPreferences;
     static SharedPreferences.Editor editor;
@@ -54,14 +45,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             int action = event.getActionMasked();
-
             if (action == MotionEvent.ACTION_DOWN && gameLayout.hasAllTilesAligned()) {
-                MainActivity.this.setValues();
-                linearLayout.setBackgroundColor(backgroundColor);
+                gameLayout.setValues();
+                linearLayout.setBackgroundColor(gameLayout.getBackgroundColor());
                 gameLayout.removeSavedData();
-                gameLayout.resetGame(rows, columns);
-                gridLayoutManager.setSpanCount(columns);
-                recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
+                gameLayout.resetGame();
+                gridLayoutManager.setSpanCount(gameLayout.getColumns());
+                recyclerView.setAdapter(new TileAdapter(gameLayout, gameLayout.getTileSize()));
                 button.setBackgroundColor(Color.alpha(0));
                 v.performClick();
                 return true;
@@ -105,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
-                button.setTextColor(tileColor);
+                button.setTextColor(gameLayout.getTileColor());
                 button.setText("NEXT");
             }
         }
@@ -135,19 +125,19 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.activity_main_LinearLayout);
         recyclerView = findViewById(R.id.tile_grid_activity);
         button.setBackgroundColor(Color.alpha(0));
-        setValues();
-        linearLayout.setBackgroundColor(backgroundColor);
-        gameLayout = new GameLayout(rows, columns, tileColor, sharedPreferences, editor);
+        gameLayout = new GameLayout(sharedPreferences, editor);
+        linearLayout.setBackgroundColor(gameLayout.getBackgroundColor());
+        gameLayout.setValues();
         gameLayout.createGame();
         gameLayout.setListener(tileAlignmentListener);
-        gridLayoutManager = new GridLayoutManager(getApplicationContext(), columns, RecyclerView.VERTICAL, false) {
+        gridLayoutManager = new GridLayoutManager(getApplicationContext(), gameLayout.getColumns(), RecyclerView.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         };
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(new TileAdapter(gameLayout, tileSize));
+        recyclerView.setAdapter(new TileAdapter(gameLayout, gameLayout.getTileSize()));
         button.setOnTouchListener(allTilesAligned);
     }
 
@@ -190,44 +180,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setValues() {
+//    private void setValues() {
+//
+//        rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
+//        columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
+//        backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,
+//                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f}));
+//        tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,
+//                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
+//        editor.apply();
+//
+//        int widthTileSize = maxGameWidth / columns;
+//        int heightTileSize = maxGameHeight / rows;
+//        tileSize = Math.min(heightTileSize, widthTileSize);
+//    }
 
-        rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
-        columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
-        backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,
-                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f}));
-        tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,
-                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
-        editor.apply();
-
-        int widthTileSize = maxGameWidth / columns;
-        int heightTileSize = maxGameHeight / rows;
-        tileSize = Math.min(heightTileSize, widthTileSize);
-    }
-
-    void rustTheme(float hue, float saturation, float value) {
-        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-        tileColor = Color.HSVToColor(new float[]{hue, saturation, 0.6f});
-    }
-
-    void neoDarkTheme(float hue, float saturation, float value) {
-        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, 0.2f});
-        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
-    }
-
-    void neoLightTheme(float hue, float saturation, float value) {
-        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
-    }
+//    void rustTheme(float hue, float saturation, float value) {
+//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
+//        tileColor = Color.HSVToColor(new float[]{hue, saturation, 0.6f});
+//    }
+//
+//    void neoDarkTheme(float hue, float saturation, float value) {
+//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, 0.2f});
+//        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
+//    }
+//
+//    void neoLightTheme(float hue, float saturation, float value) {
+//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
+//        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
+//    }
 
     private void saveData() {
         ArrayList<Tile> gameTiles = gameLayout.getGameTiles();
         String jsonGame = gson.toJson(gameTiles);
         editor.putString(CURRENT_PUZZLE, jsonGame);
-        editor.putInt(CURRENT_ROW_SIZE, rows);
-        editor.putInt(CURRENT_COLUMN_SIZE, columns);
-        editor.putInt(CURRENT_BACKGROUND_COLOR, columns);
-        editor.putInt(CURRENT_TILE_COLOR, tileColor);
+        editor.putInt(CURRENT_ROW_SIZE, gameLayout.getRows());
+        editor.putInt(CURRENT_COLUMN_SIZE, gameLayout.getColumns());
+        editor.putInt(CURRENT_BACKGROUND_COLOR, gameLayout.getBackgroundColor());
+        editor.putInt(CURRENT_TILE_COLOR, gameLayout.getTileColor());
         editor.apply();
     }
 
