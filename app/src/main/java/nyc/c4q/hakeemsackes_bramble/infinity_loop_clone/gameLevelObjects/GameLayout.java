@@ -33,7 +33,6 @@ public class GameLayout {
     private final HashMap<Integer, String[]> tilePossibilities = new TileTypes().getTiles();
     private TileAlignmentListener listener;
     private boolean allTilesAreAligned;
-
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor edit;
     private HashMap<Integer, Path> pathMap = new HashMap<>();
