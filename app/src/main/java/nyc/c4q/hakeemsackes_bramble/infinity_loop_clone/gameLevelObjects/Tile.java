@@ -2,16 +2,19 @@ package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects;
 
 import java.util.HashSet;
 
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.loopDetectionSystem.TileNode;
+
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
 
-public class Tile {
+public class Tile extends TileNode {
     private int pathId;
     private int orientation;
     private int tileType;
     private int correctOrientation;
     private boolean[] alignment = new boolean[4];
+
     private String[] prongOrientations;
     private HashSet<SquareTilePositions> tilePositions;
 
@@ -20,13 +23,13 @@ public class Tile {
     private String correctStringOrientation;
 
     Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
+        super();
         this.prongOrientations = prongOrientations;
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
         this.orientation = orientation;
         this.correctStringOrientation = prongOrientations[correctOrientation + 1];
         assignStringOrientation(orientation);
-
     }
 
     public String getStringOrientation() {
