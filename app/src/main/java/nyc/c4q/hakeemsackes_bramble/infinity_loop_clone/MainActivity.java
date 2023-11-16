@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameOneLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String CURRENT_TILE_COLOR = "tile_color";
     private Gson gson;
     public RecyclerView recyclerView;
-    private GameLayout gameLayout;
+    private GameOneLayout gameOneLayout;
     private Button button;
     private LinearLayout linearLayout;
     private static final String TAG = MainActivity.class.getName();
@@ -45,13 +45,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             int action = event.getActionMasked();
-            if (action == MotionEvent.ACTION_DOWN && gameLayout.hasAllTilesAligned()) {
-                gameLayout.setValues();
-                linearLayout.setBackgroundColor(gameLayout.getBackgroundColor());
-                gameLayout.removeSavedData();
-                gameLayout.resetGame();
-                gridLayoutManager.setSpanCount(gameLayout.getColumns());
-                recyclerView.setAdapter(new TileAdapter(gameLayout, gameLayout.getTileSize()));
+            if (action == MotionEvent.ACTION_DOWN && gameOneLayout.hasAllTilesAligned()) {
+                gameOneLayout.setValues();
+                linearLayout.setBackgroundColor(gameOneLayout.getBackgroundColor());
+                gameOneLayout.removeSavedData();
+                gameOneLayout.resetGame();
+                gridLayoutManager.setSpanCount(gameOneLayout.getColumns());
+                recyclerView.setAdapter(new TileAdapter(gameOneLayout, gameOneLayout.getTileSize()));
                 button.setBackgroundColor(Color.alpha(0));
                 v.performClick();
                 return true;
@@ -64,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private final TileAlignmentListener tileAlignmentListener = new TileAlignmentListener() {
 
         @Override
-        public void checkTileAlignment(GameLayout gameLayout, Tile tile, int position) {
+        public void checkTileAlignment(GameOneLayout gameOneLayout, Tile tile, int position) {
 
             String prongPos = tile.getStringOrientation();
-            int[] surroundingTilePositions = gameLayout.surroundingTileNumbers(position);
+            int[] surroundingTilePositions = gameOneLayout.surroundingTileNumbers(position);
             for (int i = 0; i < 4; i++) {
                 int surPos = (i + 2) % 4;
                 // check center tiles
@@ -77,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
                     checkSurroundingTiles(i, prongPos, surroundingTilePositions, tile, surPos);
                 }
             }
-            checkPathAlignment(tile.getPathId(), gameLayout);
-            gameLayout.addCorrectedTile(position, tile.isProperlyAligned());
-            onAllTilesAligned(gameLayout.hasAllTilesAligned());
+            checkPathAlignment(tile.getPathId(), gameOneLayout);
+            gameOneLayout.addCorrectedTile(position, tile.isProperlyAligned());
+            onAllTilesAligned(gameOneLayout.hasAllTilesAligned());
         }
 
         @Override
-        public void checkPathAlignment(int pathId, GameLayout gameLayout) {
-            //gameLayout.getPathMap().get(pathId).isPathComplete();
+        public void checkPathAlignment(int pathId, GameOneLayout gameOneLayout) {
+            gameOneLayout.getPathMap().get(pathId).isPathComplete();
         }
 
         @Override
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
-                button.setTextColor(gameLayout.getTileColor());
+                button.setTextColor(gameOneLayout.getTileColor());
                 button.setText("NEXT");
             }
         }
@@ -106,11 +106,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkSurroundingTiles(int i, String prongPosition, int[] tilePositions, Tile currentTile, int adjacentTileProngPosition) {
-        Tile surroundingTile = gameLayout.getGameTiles().get(tilePositions[i]);
+        Tile surroundingTile = gameOneLayout.getGameTiles().get(tilePositions[i]);
         boolean connectionChecker = prongPosition.charAt(i) == surroundingTile.getStringOrientation().charAt(adjacentTileProngPosition);
         currentTile.isProngConnected(i, connectionChecker);
         surroundingTile.isProngConnected(adjacentTileProngPosition, connectionChecker);
-        gameLayout.addCorrectedTile(tilePositions[i], surroundingTile.isProperlyAligned());
+        gameOneLayout.addCorrectedTile(tilePositions[i], surroundingTile.isProperlyAligned());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -125,19 +125,19 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.activity_main_LinearLayout);
         recyclerView = findViewById(R.id.tile_grid_activity);
         button.setBackgroundColor(Color.alpha(0));
-        gameLayout = new GameLayout(sharedPreferences, editor);
-        linearLayout.setBackgroundColor(gameLayout.getBackgroundColor());
-        gameLayout.setValues();
-        gameLayout.createGame();
-        gameLayout.setListener(tileAlignmentListener);
-        gridLayoutManager = new GridLayoutManager(getApplicationContext(), gameLayout.getColumns(), RecyclerView.VERTICAL, false) {
+        gameOneLayout = new GameOneLayout(sharedPreferences, editor);
+        linearLayout.setBackgroundColor(gameOneLayout.getBackgroundColor());
+        gameOneLayout.setValues();
+        gameOneLayout.createGame();
+        gameOneLayout.setListener(tileAlignmentListener);
+        gridLayoutManager = new GridLayoutManager(getApplicationContext(), gameOneLayout.getColumns(), RecyclerView.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         };
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(new TileAdapter(gameLayout, gameLayout.getTileSize()));
+        recyclerView.setAdapter(new TileAdapter(gameOneLayout, gameOneLayout.getTileSize()));
         button.setOnTouchListener(allTilesAligned);
     }
 
@@ -211,13 +211,13 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private void saveData() {
-        ArrayList<Tile> gameTiles = gameLayout.getGameTiles();
+        ArrayList<Tile> gameTiles = gameOneLayout.getGameTiles();
         String jsonGame = gson.toJson(gameTiles);
         editor.putString(CURRENT_PUZZLE, jsonGame);
-        editor.putInt(CURRENT_ROW_SIZE, gameLayout.getRows());
-        editor.putInt(CURRENT_COLUMN_SIZE, gameLayout.getColumns());
-        editor.putInt(CURRENT_BACKGROUND_COLOR, gameLayout.getBackgroundColor());
-        editor.putInt(CURRENT_TILE_COLOR, gameLayout.getTileColor());
+        editor.putInt(CURRENT_ROW_SIZE, gameOneLayout.getRows());
+        editor.putInt(CURRENT_COLUMN_SIZE, gameOneLayout.getColumns());
+        editor.putInt(CURRENT_BACKGROUND_COLOR, gameOneLayout.getBackgroundColor());
+        editor.putInt(CURRENT_TILE_COLOR, gameOneLayout.getTileColor());
         editor.apply();
     }
 

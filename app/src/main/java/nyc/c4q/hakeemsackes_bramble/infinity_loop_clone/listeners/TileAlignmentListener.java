@@ -1,6 +1,6 @@
 package nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners;
 
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameOneLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 /**
@@ -8,8 +8,8 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
  */
 
 public interface TileAlignmentListener {
-    void checkTileAlignment(GameLayout gameLayout, Tile tile, int position);
-    void checkPathAlignment(int pathId, GameLayout gameLayout);
+    void checkTileAlignment(GameOneLayout gameOneLayout, Tile tile, int position);
+    void checkPathAlignment(int pathId, GameOneLayout gameOneLayout);
 
     void onPathComplete();
 

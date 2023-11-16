@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views.TileView;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameOneLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
 
 /**
@@ -12,20 +12,20 @@ import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.Tile;
  */
 
 class TileViewHolder extends RecyclerView.ViewHolder {
-    private GameLayout mGameLayout;
+    private GameOneLayout mGameOneLayout;
     private static final String TAG = TileViewHolder.class.getName();
 
-    public TileViewHolder(View itemView, GameLayout gameLayout) {
+    public TileViewHolder(View itemView, GameOneLayout gameOneLayout) {
         super(itemView);
-        this.mGameLayout = gameLayout;
+        this.mGameOneLayout = gameOneLayout;
     }
 
     public void bind(final int position) {
 
-        final Tile tile = mGameLayout.getGameTiles().get(position);
+        final Tile tile = mGameOneLayout.getGameTiles().get(position);
         ((TileView) itemView).implementTileValues(tile);
-        mGameLayout.runCheckTileAlignmentListener(tile, position);
-        mGameLayout.addCorrectedTile(position, tile.isProperlyAligned());
+        mGameOneLayout.runCheckTileAlignmentListener(tile, position);
+        mGameOneLayout.addCorrectedTile(position, tile.isProperlyAligned());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,10 +33,10 @@ class TileViewHolder extends RecyclerView.ViewHolder {
                 /**
                  * here i'll run color change animations
                  */
-                if (!mGameLayout.hasAllTilesAligned()) {
+                if (!mGameOneLayout.hasAllTilesAligned()) {
                     ((TileView) itemView).rotateView(tile.getOrientation(), (tile.getOrientation() + 1) % 4);
                     tile.assignOrientation((tile.getOrientation() + 1) % 4);
-                    mGameLayout.runCheckTileAlignmentListener(tile, position);
+                    mGameOneLayout.runCheckTileAlignmentListener(tile, position);
                 }
             }
         });

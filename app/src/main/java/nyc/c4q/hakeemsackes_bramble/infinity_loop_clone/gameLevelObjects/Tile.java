@@ -21,9 +21,11 @@ public class Tile extends TileNode {
     private HashSet<Integer> connectedProngs = new HashSet<>();
     private String stringOrientation;
     private String correctStringOrientation;
+    private int tilePathId;
+    private int prongCount;
 
-    Tile(int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
-        super();
+    Tile(int tileNumber, int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
+        super(tileNumber, prongOrientations[1].replace("0", "").length());
         this.prongOrientations = prongOrientations;
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
@@ -46,7 +48,7 @@ public class Tile extends TileNode {
         assignStringOrientation(orientation);
     }
 
-    public void assignStringOrientation(int orient){
+    public void assignStringOrientation(int orient) {
         stringOrientation = prongOrientations[orient + 1];
     }
 
@@ -87,6 +89,10 @@ public class Tile extends TileNode {
         return alignment[0] && alignment[1] && alignment[2] && alignment[3];
     }
 
+    public boolean thereIsZeroAlignment() {
+        return !alignment[0] && !alignment[1] && !alignment[2] && !alignment[3];
+    }
+
     public int getPathId() {
         return pathId;
     }
@@ -98,4 +104,25 @@ public class Tile extends TileNode {
     public String getCorrectStringOrientation() {
         return correctStringOrientation;
     }
+
+    public void setTilePathId(int uuid) {
+        this.tilePathId = uuid;
+    }
+
+    public int getTilePathId() {
+        return tilePathId;
+    }
+
+    public boolean[] getAlignment() {
+        return alignment;
+    }
+
+    public int getProngCount() {
+        return prongCount;
+    }
+
+    public void setProngCount(int prongCount) {
+        this.prongCount = prongCount;
+    }
+
 }

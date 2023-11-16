@@ -16,12 +16,13 @@ import java.util.Set;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.MainActivity;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.listeners.TileAlignmentListener;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.loopDetectionSystem.TileLinkedList;
 
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
 
-public class GameLayout {
+public class GameOneLayout {
 
     private int tileColor;
     private int rows;
@@ -36,12 +37,13 @@ public class GameLayout {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor edit;
     private HashMap<Integer, Path> pathMap = new HashMap<>();
+    private HashMap<Integer, TileLinkedList> tileLinkedLists = new HashMap<>();
     private static final int maxGameWidth = 360;
     private static final int maxGameHeight = 540;
     private int backgroundColor;
     private int tileSize;
 
-    public GameLayout( SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
+    public GameOneLayout(SharedPreferences sharedPreferences, SharedPreferences.Editor editor) {
         this.mSharedPreferences = sharedPreferences;
         this.edit = editor;
         setValues();
@@ -53,10 +55,35 @@ public class GameLayout {
             String typeOfPosition = positionType(i, positions);
             int tileType = returnValidTile(typeOfPosition);
             int correctOrientation = returnOrientationOption(tileType, typeOfPosition);
-            Tile tile = new Tile(rand.nextInt(4), tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
+            int currOrientation = rand.nextInt(4);
+            Tile tile = new Tile(i, currOrientation, tileType, correctOrientation, Objects.requireNonNull(tilePossibilities.get(tileType)));
+            tile.setProngCount(typeOfPosition.replace("0", "").length());
             tile.setTilePositions(positions);
+            addTileToInitialPathMap(tile, currOrientation, i);
             gameTiles.add(tile);
         }
+    }
+
+    private void addTileToInitialPathMap(Tile tile, int currOrientation, int position) {
+        for (int i = 0; i < 4; i += 3) {
+            int surPos = (i + 2) % 4;
+            // check center tiles
+            // if Zero prongs are connected
+            if (tile.thereIsZeroAlignment()) {
+                tile.setTilePathId(tile.getUuid());
+                tileLinkedLists.put(tile.getTilePathId(), new TileLinkedList());
+            } else if  /*if the current side of the tile is on some edge*/ (tile.getTilePositions().contains(SquareTilePositions.getTilePositionsFromValue(i))) {
+                break;
+            } else if (tile.getAlignment()[i] == true && tile.getProngOrientations()[currOrientation + 1].charAt(i) == '1') {
+                //check for connected prongs and
+                //if prongs are connected then connect tile to connected tiles node
+                addConnectedTilesToLinkedList(tile, gameTiles.get(surroundingTileNumbers(position)[i]));
+            }
+        }
+    }
+
+    private void addConnectedTilesToLinkedList(Tile tile, Tile surroundingTile) {
+           tileLinkedLists.get(surroundingTile.getTilePathId()).addNode(tile.getUuid(),tile.getProngCount(),tile);
     }
 
     private void loadTileData() {
@@ -106,7 +133,7 @@ public class GameLayout {
      * @param positions
      * @return
      */
-    private String positionType(int i, Set<SquareTilePositions> positions) {
+    String positionType(int i, Set<SquareTilePositions> positions) {
         char[] type = new char[4];
         int[] surroundingTilePositions = surroundingTileNumbers(i);
         for (int j = 3; j < 7; j++) {
@@ -132,7 +159,7 @@ public class GameLayout {
      * @param type
      * @return
      */
-    private int returnOrientationOption(int tileType, String type) {
+    int returnOrientationOption(int tileType, String type) {
         for (int j = 1; j < 5; j++) {
             if (Objects.requireNonNull(tilePossibilities.get(tileType))[j].equals(type)) {
                 return j - 1;
@@ -143,7 +170,6 @@ public class GameLayout {
 
     /**
      * resets te current game level with new tiles given the new column and row attributes
-     *
      */
     public void resetGame() {
         edit.clear().apply();
@@ -153,7 +179,7 @@ public class GameLayout {
         createGameTiles();
     }
 
-    private HashSet<SquareTilePositions> checkPosition(int i) {
+    HashSet<SquareTilePositions> checkPosition(int i) {
         HashSet<SquareTilePositions> positions = new HashSet<>();
         boolean topEdge = i < columns;
         boolean bottomEdge = i >= ((rows * columns) - columns);
@@ -215,7 +241,6 @@ public class GameLayout {
     }
 
     public void setValues() {
-
         rows = mSharedPreferences.getInt(MainActivity.CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
         columns = mSharedPreferences.getInt(MainActivity.CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
         backgroundColor = mSharedPreferences.getInt(MainActivity.CURRENT_BACKGROUND_COLOR,
@@ -291,5 +316,45 @@ public class GameLayout {
 
     public int getTileSize() {
         return tileSize;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public Random getRand() {
+        return rand;
+    }
+
+    public void setGameTiles(ArrayList<Tile> gameTiles) {
+        this.gameTiles = gameTiles;
+    }
+
+    public HashSet<Integer> getCorrectlyOriented() {
+        return correctlyOriented;
+    }
+
+    public HashMap<Integer, String[]> getTilePossibilities() {
+        return tilePossibilities;
+    }
+
+    public TileAlignmentListener getListener() {
+        return listener;
+    }
+
+    public boolean isAllTilesAreAligned() {
+        return allTilesAreAligned;
+    }
+
+    public void setAllTilesAreAligned(boolean allTilesAreAligned) {
+        this.allTilesAreAligned = allTilesAreAligned;
+    }
+
+    public void setTileSize(int tileSize) {
+        this.tileSize = tileSize;
+    }
+
+    protected void addGameTiles(Tile tile) {
+
     }
 }

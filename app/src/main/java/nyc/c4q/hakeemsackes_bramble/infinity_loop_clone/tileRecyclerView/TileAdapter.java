@@ -4,24 +4,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.custom_views.TileView;
-import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameLayout;
+import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameOneLayout;
 
 /**
  * Created by hakeemsackes-bramble on 10/15/17.
  */
 
 public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
-    GameLayout gameLayout;
+    GameOneLayout gameOneLayout;
     int tileSize;
-    public TileAdapter(GameLayout gameLayout, int tileSize) {
-        this.gameLayout = gameLayout;
+    public TileAdapter(GameOneLayout gameOneLayout, int tileSize) {
+        this.gameOneLayout = gameOneLayout;
         this.tileSize = tileSize;
     }
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-       return new TileViewHolder(new TileView(parent.getContext(), gameLayout.getTileColor(), tileSize), gameLayout);
+       return new TileViewHolder(new TileView(parent.getContext(), gameOneLayout.getTileColor(), tileSize), gameOneLayout);
     }
 
     @Override
@@ -31,6 +31,6 @@ public class TileAdapter extends RecyclerView.Adapter<TileViewHolder> {
 
     @Override
     public int getItemCount() {
-        return gameLayout.getGameTiles().size();
+        return gameOneLayout.getGameTiles().size();
     }
 }
