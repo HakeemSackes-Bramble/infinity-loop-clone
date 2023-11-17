@@ -36,6 +36,7 @@ public class TileLinkedList {
             if (head.neighbors.size() < prongCount) {
                 head.neighbors.add(tile);
                 tile.getNeighbors().add(head);
+                totalNodes++;
             } else {
                 System.out.println("Can't add more neighbors to the current node.");
             }

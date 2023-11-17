@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void checkPathAlignment(int pathId, GameOneLayout gameOneLayout) {
-            gameOneLayout.getPathMap().get(pathId).isPathComplete();
+            //gameOneLayout.getPathMap().get(pathId).isPathComplete();
         }
 
         @Override
