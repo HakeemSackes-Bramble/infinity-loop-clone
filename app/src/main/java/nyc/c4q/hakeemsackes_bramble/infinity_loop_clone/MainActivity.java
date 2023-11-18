@@ -15,7 +15,11 @@ import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.GameOneLayout;
 import nyc.c4q.hakeemsackes_bramble.infinity_loop_clone.gameLevelObjects.SquareTilePositions;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String CURRENT_COLUMN_SIZE = "column_size";
     public static final String CURRENT_BACKGROUND_COLOR = "background_color";
     public static final String CURRENT_TILE_COLOR = "tile_color";
+    public String DATE = "date";
     private Gson gson;
     public RecyclerView recyclerView;
     private GameOneLayout gameOneLayout;
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
                 button.setTextColor(gameOneLayout.getTileColor());
-                button.setText("NEXT");
+                button.setText();
             }
         }
     };
@@ -180,39 +185,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void setValues() {
-//
-//        rows = sharedPreferences.getInt(CURRENT_ROW_SIZE, rand.nextInt(9) + 5);
-//        columns = sharedPreferences.getInt(CURRENT_COLUMN_SIZE, rand.nextInt(5) + 5);
-//        backgroundColor = sharedPreferences.getInt(CURRENT_BACKGROUND_COLOR,
-//                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 1f}));
-//        tileColor = sharedPreferences.getInt(CURRENT_TILE_COLOR,
-//                Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
-//        editor.apply();
-//
-//        int widthTileSize = maxGameWidth / columns;
-//        int heightTileSize = maxGameHeight / rows;
-//        tileSize = Math.min(heightTileSize, widthTileSize);
-//    }
-
-//    void rustTheme(float hue, float saturation, float value) {
-//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-//        tileColor = Color.HSVToColor(new float[]{hue, saturation, 0.6f});
-//    }
-//
-//    void neoDarkTheme(float hue, float saturation, float value) {
-//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, 0.2f});
-//        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
-//    }
-//
-//    void neoLightTheme(float hue, float saturation, float value) {
-//        backgroundColor = Color.HSVToColor(new float[]{hue, saturation, value});
-//        tileColor = Color.HSVToColor(new float[]{hue, saturation + .6f, value});
-//    }
-
     private void saveData() {
         ArrayList<Tile> gameTiles = gameOneLayout.getGameTiles();
         String jsonGame = gson.toJson(gameTiles);
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        String formattedDate = df.format(c);
+        editor.putString(DATE, formattedDate);
         editor.putString(CURRENT_PUZZLE, jsonGame);
         editor.putInt(CURRENT_ROW_SIZE, gameOneLayout.getRows());
         editor.putInt(CURRENT_COLUMN_SIZE, gameOneLayout.getColumns());
