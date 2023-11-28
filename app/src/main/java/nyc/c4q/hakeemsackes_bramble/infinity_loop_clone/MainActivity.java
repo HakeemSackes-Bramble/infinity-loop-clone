@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String CURRENT_COLUMN_SIZE = "column_size";
     public static final String CURRENT_BACKGROUND_COLOR = "background_color";
     public static final String CURRENT_TILE_COLOR = "tile_color";
-    public String DATE = "date";
+    public static String DATE = "date";
     private Gson gson;
     public RecyclerView recyclerView;
     private GameOneLayout gameOneLayout;
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager gridLayoutManager;
     SharedPreferences sharedPreferences;
     static SharedPreferences.Editor editor;
+    Date c = Calendar.getInstance().getTime();
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.getDefault());
+    String formattedDate = df.format(c);
     private final View.OnTouchListener allTilesAligned = new View.OnTouchListener() {
 
         @Override
@@ -94,14 +99,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPathComplete() {
-            //disappear and slide down, change color,  do somehting.
+            //disappear and slide down, change color,  do something.
         }
 
         @Override
         public void onAllTilesAligned(boolean alignedTiles) {
             if (alignedTiles) {
                 button.setTextColor(gameOneLayout.getTileColor());
-                button.setText();
+                button.setText(sharedPreferences.getString(DATE, "NEXT"));
             }
         }
     };
@@ -199,5 +204,4 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(CURRENT_TILE_COLOR, gameOneLayout.getTileColor());
         editor.apply();
     }
-
 }

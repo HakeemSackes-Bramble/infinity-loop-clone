@@ -26,6 +26,7 @@ public class Tile extends TileNode {
 
     Tile(int tileNumber, int orientation, int tileType, int correctOrientation, String[] prongOrientations) {
         super(tileNumber, prongOrientations[1].replace("0", "").length());
+        connectedProngs = new HashSet<>();
         this.prongOrientations = prongOrientations;
         this.tileType = tileType;
         this.correctOrientation = correctOrientation;
@@ -78,11 +79,6 @@ public class Tile extends TileNode {
 
     public void isProngConnected(int pos, boolean checkConnection) {
         alignment[pos] = checkConnection;
-        if (checkConnection && stringOrientation.charAt(pos) == '1') {
-            connectedProngs.add(pos);
-        } else {
-            connectedProngs.remove(pos);
-        }
     }
 
     public boolean isProperlyAligned() {

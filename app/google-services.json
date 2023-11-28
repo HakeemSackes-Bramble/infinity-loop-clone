@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "728666225467",
+    "project_id": "superlooper-68407",
+    "storage_bucket": "superlooper-68407.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:728666225467:android:9084fe5ba6bbd9800d151e",
+        "android_client_info": {
+          "package_name": "nyc.c4q.hakeemsackes_bramble.infinity_loop_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "728666225467-qb9jq79fh2p2lcestant1a8ri6oo58si.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nyc.c4q.hakeemsackes_bramble.infinity_loop_clone",
+            "certificate_hash": "84d4d19ab8249456563dc9b36b295ca40f50ef62"
+          }
+        },
+        {
+          "client_id": "728666225467-3vccaqlnfkkdg70s4e4va989hkk3t4so.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg2on4eswH7sHwzC9-kW2Bu6fiqdUQjUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "728666225467-3vccaqlnfkkdg70s4e4va989hkk3t4so.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

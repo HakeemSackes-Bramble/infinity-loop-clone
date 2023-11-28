@@ -248,7 +248,6 @@ public class GameOneLayout {
         tileColor = mSharedPreferences.getInt(MainActivity.CURRENT_TILE_COLOR,
                 Color.HSVToColor(new float[]{rand.nextFloat() * 360, .05f, 0.6f}));
         edit.apply();
-
         int widthTileSize = maxGameWidth / columns;
         int heightTileSize = maxGameHeight / rows;
         tileSize = Math.min(heightTileSize, widthTileSize);
